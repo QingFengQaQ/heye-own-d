@@ -129,7 +129,7 @@
     }
 
     /* ============================================================
-       雪花飘屏
+       雪花飘屏 —— 更小、更淡、带荧光、移动端自适应
     ============================================================ */
     .snow-layer {
       position: fixed;
@@ -141,20 +141,21 @@
     .snow-layer span {
       position: absolute;
       top: -10vh;
-      color: #ffffff;
-      text-shadow:
-        0 0 10px rgba(255, 255, 255, 1),
-        0 0 24px rgba(170, 215, 255, 0.95),
-        0 0 40px rgba(140, 200, 250, 0.6);
+      font-size: clamp(6px, 1.2vw, 10px); /* 移动端自适应极小 */
+      color: rgba(180, 225, 255, 0.65); 
+      /* 荧光特效：多重阴影叠加 */
+      text-shadow: 
+        0 0 4px rgba(255, 255, 255, 0.8),
+        0 0 8px rgba(160, 220, 255, 0.6),
+        0 0 12px rgba(100, 180, 255, 0.4);
       animation: snowFall linear infinite;
-      will-change: transform;
-      opacity: 0.9;
+      will-change: transform, opacity;
     }
     @keyframes snowFall {
       0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
-      8% { opacity: 0.95; }
-      90% { opacity: 0.85; }
-      100% { transform: translateY(110vh) translateX(var(--drift, 30px)) rotate(360deg); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.5; }
+      100% { transform: translateY(110vh) translateX(var(--drift, 20px)) rotate(360deg); opacity: 0; }
     }
 
     /* ============================================================
@@ -241,7 +242,10 @@
       flex: 1;
     }
     .title-main h1 {
-      font-family: var(--en); font-style: italic; font-weight: 300;
+      /* 使用 Google 宋体（Noto Serif SC）*/
+      font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; 
+      font-style: italic; /* 斜体 */
+      font-weight: 400;
       font-size: min(28vw, 120px); line-height: 0.9;
       letter-spacing: .02em;
       margin-left: -6px;
@@ -255,6 +259,8 @@
     /* 背面虚影描边效果 */
     .title-main h1::after {
       content: "何也";
+      font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; 
+      font-style: italic; /* 虚影同步斜体 */
       position: absolute;
       top: -10px; left: -10px;
       z-index: -1;
@@ -1376,14 +1382,11 @@
       color: var(--accent);
       transform: translate(2px, -2px);
     }
-        /* 跳转卡片特定样式 */
+    /* 跳转卡片特定样式 */
     .jump-card .more-head {
       text-decoration: none;
-      /* 因为用了 <a>，颜色继承保持一致 */
       color: inherit;
     }
-    
-    /* 把原本用两根线拼成的 + 号，改成一个 ↗ 箭头 */
     .jump-card .more-toggle {
       border: 1px solid var(--line);
     }
@@ -1394,12 +1397,9 @@
       color: var(--text-soft);
       transition: color .3s, transform .4s var(--ease);
     }
-    /* 隐藏原来的两根线 */
     .jump-card .more-toggle .bar {
       display: none;
     }
-    
-    /* 鼠标悬浮时箭头动效 */
     .jump-card:hover .more-toggle {
       border-color: var(--accent);
     }
@@ -1660,7 +1660,7 @@
   </div>
 </header>
 
-<!-- 文案过场 —— 点一下出一行 -->
+<!-- 文案过场 —— 点一下出一行（不点完不能滑） -->
 <section class="text-passage" id="passage">
   <div class="passage-line" data-passage>
     <span class="passage-text">雪落无声，<em>万物皆有回响</em>。</span>
@@ -2138,23 +2138,34 @@
 
 <script>
 /* ============================================================
-   雪花飘屏生成
+   雪花飘屏生成 —— 更小、更淡、带荧光
    ============================================================ */
 (function(){
   const layer = document.getElementById('snowLayer');
   if (!layer) return;
   const flakes = ['❄', '❅', '❆', '✧', '·', '❄', '❅', '❆'];
-  const count = 120;
+  const count = 150; // 增加数量，弥补变小后的稀疏感
   for (let i = 0; i < count; i++) {
     const el = document.createElement('span');
     el.textContent = flakes[Math.floor(Math.random() * flakes.length)];
     el.style.left = (Math.random() * 100) + '%';
-    el.style.fontSize = (Math.random() * 1.8 + 0.7) + 'rem';
-    el.style.animationDuration = (Math.random() * 8 + 6) + 's';
-    el.style.animationDelay = (Math.random() * 10) + 's';
-    el.style.opacity = (Math.random() * 0.6 + 0.35);
-    el.style.color = '#ffffff';
-    el.style.setProperty('--drift', (Math.random() * 80 - 40) + 'px');
+    
+    // 字体大小在 8px 到 16px 之间随机
+    el.style.fontSize = (Math.random() * 8 + 8) + 'px'; 
+    
+    // 动画时长 10s - 20s，更舒缓
+    el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+    el.style.animationDelay = (Math.random() * 15) + 's';
+    
+    // 整体透明度在 0.3 - 0.7 之间
+    el.style.opacity = (Math.random() * 0.4 + 0.3);
+    
+    // 随机分配颜色（纯白或淡蓝）
+    el.style.color = Math.random() > 0.5 ? 'rgba(200, 235, 255, 0.7)' : 'rgba(255, 255, 255, 0.6)';
+    
+    // 横向漂移距离稍微缩小（-20px 到 +20px），显得更轻盈
+    el.style.setProperty('--drift', (Math.random() * 40 - 20) + 'px');
+    
     layer.appendChild(el);
   }
 })();
@@ -2298,7 +2309,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   文案过场 —— 点一下出一行
+   文案过场 —— 点一下出一行（不点完不能滑）
    ============================================================ */
 (function(){
   const passage = document.getElementById('passage');
@@ -2308,6 +2319,27 @@ function toast(msg, ms = 2000) {
 
   let idx = 0;
 
+  // 在视口内且没点完时，锁定滚动
+  const lockScroll = () => document.body.classList.add('lock');
+  const unlockScroll = () => document.body.classList.remove('lock');
+
+  // 进入间奏页时锁定
+  const ioLock = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        // 如果还没点完，就锁定滚动
+        if (idx < lines.length) {
+          lockScroll();
+        }
+      } else {
+        // 离开间奏页，确保解除锁定（避免影响后续页面）
+        unlockScroll();
+      }
+    });
+  }, { threshold: 0.1 }); // 只要露出来一点就锁定
+
+  ioLock.observe(passage);
+
   function showNext() {
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
@@ -2315,8 +2347,11 @@ function toast(msg, ms = 2000) {
     }
     lines[idx].classList.add('in');
     idx++;
+    
+    // 点完最后一句，解锁滚动
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
+      unlockScroll(); 
     }
   }
 
@@ -2324,22 +2359,21 @@ function toast(msg, ms = 2000) {
   passage.addEventListener('click', () => {
     if (!started) {
       started = true;
-      showNext();
-    } else {
-      showNext();
     }
+    showNext();
     buzz(6);
   });
 
-  const io = new IntersectionObserver((entries) => {
+  const ioTap = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
+      if (entry.isIntersecting && idx < lines.length) {
         tapHint.classList.add('show');
-        io.unobserve(entry.target);
+      } else {
+        tapHint.classList.remove('show');
       }
     });
   }, { threshold: 0.3 });
-  io.observe(passage);
+  ioTap.observe(passage);
 
   let ticking = false;
   function onScroll(){
@@ -2763,7 +2797,7 @@ function toast(msg, ms = 2000) {
     a.loop = true;
     a.volume = 0.3;
     const list = [];
-    const cdnPrefix = 'https://cdn.jsdelivr.net/gh/qingfengqaq/heye-own-mg@main/';
+    const cdnPrefix = 'https://cdn.jsdelivr.net/gh/qingfengqaq/heye-own-d@main/';
     for (let i = 1; i <= MAX; i++) list.push(cdnPrefix + String(i) + EXT);
     const src = list[Math.floor(Math.random() * list.length)];
     a.src = src;
