@@ -81,7 +81,6 @@
     button:focus, a:focus, [role="button"]:focus { outline: none; box-shadow: none; }
     button:focus-visible, a:focus-visible { outline: 1px solid var(--accent); outline-offset: 2px; }
 
-    /* 统一交互动画：浮起 + 柔光 */
     .hover-float { transition: transform .4s var(--ease-out), box-shadow .4s var(--ease-out), color .3s, border-color .3s, background .3s; }
     .hover-float:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(120, 190, 240, 0.18); }
     .hover-float:active { transform: translateY(-1px) scale(0.99); }
@@ -134,7 +133,7 @@
     }
 
     /* ============================================================
-       雪花飘屏 —— 更小、更淡、带荧光、移动端自适应
+       雪花飘屏
     ============================================================ */
     .snow-layer {
       position: fixed;
@@ -196,7 +195,7 @@
     section.block { position: relative; padding: 72px 0 56px; z-index: 2; }
 
     /* ============================================================
-       HERO (美化首屏)
+       HERO
     ============================================================ */
     .boot-stage {
       position: relative;
@@ -451,7 +450,7 @@
     .menu-footer .prompt { color: var(--accent); }
 
     /* ============================================================
-       文案过场 —— 点一下出一行（移动端优化）
+       文案过场
     ============================================================ */
     .text-passage {
       position: relative;
@@ -460,16 +459,25 @@
       min-height: 100svh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      gap: 7vh;
-      padding: 120px var(--pad) 120px;
+      padding: 120px var(--pad) 0;
       max-width: 820px;
       margin: 0 auto;
       cursor: pointer;
       -webkit-user-select: none;
       user-select: none;
       touch-action: pan-y;
+    }
+
+    .passage-content {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 7vh;
+      padding: 0 0 20px;
     }
 
     .passage-line {
@@ -551,9 +559,13 @@
     }
 
     .passage-tap {
-      margin-top: 24px;
+      position: absolute;
+      left: 50%;
+      bottom: calc(30px + var(--safe-b));
+      transform: translateX(-50%);
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 10px;
       font-family: var(--mono);
       font-size: 10px;
@@ -561,6 +573,9 @@
       color: var(--text-mute);
       opacity: 0;
       transition: opacity .6s var(--ease);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 3;
     }
     .passage-tap.show { opacity: 1; }
     .passage-tap .tap-dot {
@@ -1033,7 +1048,7 @@
     }
 
     /* ============================================================
-       03 须知 (自适应高度)
+       03 须知
     ============================================================ */
     .notice-grid {
       position: relative; z-index: 2;
@@ -1155,7 +1170,7 @@
     .notice-col[data-open="false"] .col-head .col-name { color: var(--text-main); }
 
     /* ============================================================
-       确认按钮 —— 六边形
+       确认按钮
     ============================================================ */
     .confirm-panel {
       margin-top: 56px;
@@ -1475,7 +1490,7 @@
     .audio-toggle.muted { color: var(--text-mute); }
 
     /* ============================================================
-       响应式 —— 移动端重点优化
+       响应式
     ============================================================ */
     @media (max-width: 900px) {
       .style-stage { grid-template-columns: 1fr; gap: 26px; }
@@ -1513,9 +1528,12 @@
 
     @media (max-width: 600px) {
       .text-passage { 
-        gap: 5.5vh; 
-        padding: 80px 18px 80px; 
+        padding: 80px 18px 0; 
         min-height: 100svh;
+      }
+      .passage-content {
+        gap: 5.5vh;
+        padding-bottom: 16px;
       }
       .passage-line .passage-text { 
         font-size: 19px; 
@@ -1530,7 +1548,7 @@
       .passage-tap { 
         font-size: 9px; 
         letter-spacing: 2px; 
-        min-height: 44px;
+        bottom: calc(30px + var(--safe-b));
         padding: 8px 16px;
       }
 
@@ -1667,7 +1685,7 @@
 
 <main class="page">
 
-<!-- HERO (美化版) -->
+<!-- HERO -->
 <header class="boot-stage" id="top">
   <div class="boot-window">
     <div class="boot-title" id="bootTitle">
@@ -1688,26 +1706,28 @@
   </div>
 </header>
 
-<!-- 文案过场 —— 点一下出一行（不点完不能滑） -->
+<!-- 文案过场 -->
 <section class="text-passage" id="passage">
-  <div class="passage-line" data-passage>
-    <span class="passage-text">雪落无声，<em>万物皆有回响</em>。</span>
-  </div>
-  <div class="passage-line" data-passage>
-    <span class="passage-text">你掌心接住的<em>不是雪</em>，是<em>一整个冬天</em>。</span>
-  </div>
-  <div class="passage-line" data-passage>
-    <span class="passage-text">有些话<em>太轻</em>，落在雪上<em>才听得见</em>。</span>
-  </div>
-  <div class="passage-line" data-passage>
-    <span class="passage-text">雪停之前，<em>请把我的名字</em>念一遍。</span>
-  </div>
-  <div class="passage-line" data-passage>
-    <span class="passage-text">然后，<em>雪会替你记住</em>。</span>
-  </div>
-  <div class="passage-end" data-passage>
-    <span class="end-mark">❄</span>
-    <span class="end-text">雪落有期 · 后会有时</span>
+  <div class="passage-content">
+    <div class="passage-line" data-passage>
+      <span class="passage-text">雪落无声，<em>万物皆有回响</em>。</span>
+    </div>
+    <div class="passage-line" data-passage>
+      <span class="passage-text">你掌心接住的<em>不是雪</em>，是<em>一整个冬天</em>。</span>
+    </div>
+    <div class="passage-line" data-passage>
+      <span class="passage-text">有些话<em>太轻</em>，落在雪上<em>才听得见</em>。</span>
+    </div>
+    <div class="passage-line" data-passage>
+      <span class="passage-text">雪停之前，<em>请把我的名字</em>念一遍。</span>
+    </div>
+    <div class="passage-line" data-passage>
+      <span class="passage-text">然后，<em>雪会替你记住</em>。</span>
+    </div>
+    <div class="passage-end" data-passage>
+      <span class="end-mark">❄</span>
+      <span class="end-text">雪落有期 · 后会有时</span>
+    </div>
   </div>
   <div class="passage-tap" id="passageTap">
     <span class="tap-dot"></span>
@@ -2153,6 +2173,23 @@
 
 <script>
 /* ============================================================
+   过场动画会话记忆
+   ============================================================ */
+const INTRO_KEY = 'snow-intro-played';
+
+function hasIntroPlayed() {
+  try {
+    return sessionStorage.getItem(INTRO_KEY) === '1';
+  } catch (e) { return false; }
+}
+
+function markIntroPlayed() {
+  try {
+    sessionStorage.setItem(INTRO_KEY, '1');
+  } catch (e) {}
+}
+
+/* ============================================================
    雪花飘屏生成
    ============================================================ */
 (function(){
@@ -2175,6 +2212,14 @@
 })();
 
 /* ============================================================
+   基础工具
+   ============================================================ */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
+
+/* ============================================================
    逐句文案加载 → 进入主页
    ============================================================ */
 (function(){
@@ -2183,11 +2228,29 @@
   const bootTitle = document.getElementById('bootTitle');
   const bootScroll = document.getElementById('bootScroll');
   const audioBtn = document.querySelector('.audio-toggle');
-  
+  const passageLines = $$('.passage-line, .passage-end');
+  const lastPassage = passageLines[passageLines.length - 1];
+
+  if (hasIntroPlayed()) {
+    loader.classList.add('hidden');
+    bootTitle.classList.add('show');
+    bootScroll.classList.add('show');
+    header.classList.add('show');
+    if (audioBtn) audioBtn.classList.add('show');
+    document.body.classList.remove('lock');
+
+    if (lastPassage && lastPassage.classList.contains('in')) {
+      passageLines.forEach(l => l.classList.add('in'));
+      document.body.classList.remove('lock');
+    } else {
+      document.body.classList.add('lock');
+    }
+    return;
+  }
+
   const lines = document.querySelectorAll('.loader-line');
-  
   let delay = 300;
-  
+
   lines.forEach((line) => {
     setTimeout(() => {
       line.classList.add('show');
@@ -2199,7 +2262,8 @@
 
   setTimeout(() => {
     loader.classList.add('hidden');
-    
+    markIntroPlayed();
+
     setTimeout(() => {
       bootTitle.classList.add('show');
       bootScroll.classList.add('show');
@@ -2208,16 +2272,7 @@
       document.body.classList.remove('lock');
     }, 200);
   }, totalTime);
-
 })();
-
-/* ============================================================
-   基础工具
-   ============================================================ */
-const $ = (s, r = document) => r.querySelector(s);
-const $$ = (s, r = document) => [...r.querySelectorAll(s)];
-const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
-const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
 
 function scramble(el, text, dur = 600) {
   return new Promise(res => {
@@ -2309,54 +2364,45 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   【新增】"雪天路滑请慢步探索" 提示下方滑自动进入间奏页
+   "雪天路滑请慢步探索" 提示下方滑自动进入间奏页
    ============================================================ */
 (function(){
   const bootScroll = document.getElementById('bootScroll');
   const passage = document.getElementById('passage');
   if (!bootScroll || !passage) return;
 
-  // 获取提示区域底部位置（含padding-bottom）
+  if (hasIntroPlayed()) {
+    const passageLines = $$('.passage-line, .passage-end');
+    if (passageLines.length) {
+      const lastLine = passageLines[passageLines.length - 1];
+      if (lastLine.classList.contains('in')) return;
+    }
+  }
+
   function getBootScrollBottom() {
     const rect = bootScroll.getBoundingClientRect();
     return rect.bottom + window.scrollY;
   }
 
-  // 滑动阈值：当提示区域底部距离视口顶部小于这个值时，触发自动进入
-  // 视口高度的一半，意味着用户已经滑过提示区域的大半
   const THRESHOLD_RATIO = 0.35;
-
   let autoEntered = false;
 
   function checkScroll() {
     if (autoEntered) return;
+    if (document.body.classList.contains('lock')) return;
 
-    // 如果页面已经锁定了（间奏页未点完），不重复触发
-    if (document.body.classList.contains('lock')) {
-      // 但如果是间奏页正在锁定，也不触发
-      return;
-    }
-
-    // 当前滚动位置
     const scrollY = window.scrollY || window.pageYOffset;
-    // 提示区域底部在文档中的位置
     const bootBottom = getBootScrollBottom();
-    // 视口高度
     const vh = window.innerHeight;
 
-    // 当提示区域底部进入视口下方约 65% 处时，开始自动滑动
-    // 即：scrollY + vh * THRESHOLD_RATIO > bootBottom
     if (scrollY + vh * THRESHOLD_RATIO > bootBottom) {
       autoEntered = true;
-      // 平滑滚动到间奏页顶部
       const passageTop = passage.getBoundingClientRect().top + scrollY;
       window.scrollTo({
         top: passageTop,
         behavior: 'smooth'
       });
-      // 滚动完成后锁定页面（间奏页锁定逻辑已存在，此处确保锁定）
       setTimeout(() => {
-        // 如果间奏页还没被点完，锁定页面
         const passageLines = $$('.passage-line, .passage-end');
         const lastLine = passageLines[passageLines.length - 1];
         if (lastLine && !lastLine.classList.contains('in')) {
@@ -2366,28 +2412,22 @@ function toast(msg, ms = 2000) {
     }
   }
 
-  // 使用 IntersectionObserver 监听提示区域
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      // 当提示区域底部进入视口时，准备触发
       if (entry.isIntersecting) {
-        // 检查实际滚动位置
         checkScroll();
       }
     });
   }, {
-    // 当提示区域底部距离视口底部 35% 时触发
     rootMargin: `0px 0px -${Math.round(THRESHOLD_RATIO * 100)}% 0px`,
     threshold: 0
   });
 
-  // 监听提示区域的父容器（boot-stage）
   const bootStage = document.querySelector('.boot-stage');
   if (bootStage) {
     observer.observe(bootStage);
   }
 
-  // 备用：滚动监听
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (autoEntered) return;
@@ -2399,29 +2439,24 @@ function toast(msg, ms = 2000) {
     });
   }, { passive: true });
 
-  // 触摸滑动监听（移动端）
   let touchStartY = 0;
-  let touchMoved = false;
   window.addEventListener('touchstart', (e) => {
     if (autoEntered) return;
     touchStartY = e.touches[0].clientY;
-    touchMoved = false;
   }, { passive: true });
 
   window.addEventListener('touchmove', (e) => {
     if (autoEntered) return;
     const currentY = e.touches[0].clientY;
     const deltaY = touchStartY - currentY;
-    // 向下滑动（deltaY > 0）且滑动距离大于 30px
     if (deltaY > 30) {
-      touchMoved = true;
       checkScroll();
     }
   }, { passive: true });
 })();
 
 /* ============================================================
-   文案过场 —— 点一下出一行（移动端优化版）
+   文案过场 —— 点一下出一行
    ============================================================ */
 (function(){
   const passage = document.getElementById('passage');
@@ -2433,7 +2468,19 @@ function toast(msg, ms = 2000) {
   let isFinished = false;
   let isTouching = false;
 
-  document.body.classList.add('lock');
+  const lastLine = lines[lines.length - 1];
+  if (lastLine.classList.contains('in')) {
+    isFinished = true;
+    document.body.classList.remove('lock');
+    tapHint.classList.remove('show');
+    lines.forEach(l => l.classList.add('in'));
+    idx = lines.length;
+  } else {
+    document.body.classList.add('lock');
+    lines.forEach((l, i) => {
+      if (l.classList.contains('in')) idx = i + 1;
+    });
+  }
 
   function showNext() {
     if (idx >= lines.length) {
@@ -2519,7 +2566,7 @@ function toast(msg, ms = 2000) {
 
   const ioTap = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting && idx < lines.length) {
+      if (entry.isIntersecting && idx < lines.length && !isFinished) {
         tapHint.classList.add('show');
       } else {
         tapHint.classList.remove('show');
@@ -2736,7 +2783,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   03 须知 —— 精准定位：上一栏收起后，让上一栏顶部位于浏览器顶端下方 20px 处
+   03 须知 —— 精准定位
    ============================================================ */
 (function(){
   const noticeGrid = document.getElementById('noticeGrid');
@@ -2745,7 +2792,6 @@ function toast(msg, ms = 2000) {
   const cols = $$('.notice-col', noticeGrid);
   if (!cols.length) return;
 
-  // 偏移量：20px
   const OFFSET_PX = 20;
 
   cols.forEach(col => {
@@ -2756,34 +2802,26 @@ function toast(msg, ms = 2000) {
       const isOpen = col.dataset.open === 'true';
 
       if (!isOpen) {
-        // 找到当前已经打开的那一栏（即"上一栏"，即将收起的栏）
         const prevOpenCol = cols.find(c => c !== col && c.dataset.open === 'true');
 
-        // 先记录上一栏在文档中的绝对位置（在收起之前）
         let targetScrollY = null;
         if (prevOpenCol) {
           const prevRect = prevOpenCol.getBoundingClientRect();
           const prevDocTop = prevRect.top + window.scrollY;
-          // 目标：上一栏顶部距离浏览器顶端 20px
           targetScrollY = prevDocTop - OFFSET_PX;
         }
 
-        // 关闭其他所有栏（包括上一栏）
         cols.forEach(c => {
           if (c !== col) c.dataset.open = 'false';
         });
 
-        // 展开当前栏
         col.dataset.open = 'true';
         buzz(8);
 
-        // 平滑滚动到目标位置
         if (targetScrollY !== null) {
-          // 限制在合理范围内
           const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
           targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
 
-          // 使用 rAF 确保 DOM 开始重绘后再滚动
           requestAnimationFrame(() => {
             window.scrollTo({
               top: targetScrollY,
@@ -2793,7 +2831,6 @@ function toast(msg, ms = 2000) {
         }
 
       } else {
-        // 关闭当前栏
         col.dataset.open = 'false';
         buzz(8);
       }
@@ -2860,6 +2897,128 @@ function toast(msg, ms = 2000) {
   const style = document.createElement('style');
   style.textContent = `@keyframes shake{20%{transform:translate(-3px,2px)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,1px)}80%{transform:translate(2px,0)}}.shake{animation:shake .4s}`;
   document.head.appendChild(style);
+})();
+
+/* ============================================================
+   滚动锁：确认前限制滚动到“须知”区域底部（无法进入“更多”）
+   ★ 修复：从外部链接返回后自动校准边界，确保无障碍滑动
+   ============================================================ */
+(function(){
+  const noticeSection = document.getElementById('notice');
+  const moreSection = document.getElementById('more');
+  const holdBtn = document.getElementById('holdBtn');
+  if (!noticeSection || !moreSection || !holdBtn) return;
+
+  function isConfirmed() {
+    return localStorage.getItem('snow-confirmed') === '1';
+  }
+
+  // 计算允许的最大滚动 Y
+  function getMaxScrollY() {
+    const noticeRect = noticeSection.getBoundingClientRect();
+    const noticeBottomDoc = noticeRect.bottom + window.scrollY;
+    const vh = window.innerHeight;
+    return Math.max(0, noticeBottomDoc - vh + 20);
+  }
+
+  function unlockScroll() {
+    document.body.classList.remove('scroll-locked-to-notice');
+    document.documentElement.style.overflow = '';
+    document.body.style.overflow = '';
+  }
+
+  function applyScrollLock() {
+    if (isConfirmed()) {
+      unlockScroll();
+      return;
+    }
+    document.body.classList.add('scroll-locked-to-notice');
+  }
+
+  function enforceScrollBoundary() {
+    if (isConfirmed()) return;
+    const maxScrollY = getMaxScrollY();
+    if (window.scrollY > maxScrollY) {
+      window.scrollTo({ top: maxScrollY, behavior: 'smooth' });
+    }
+  }
+
+  // 初始化
+  applyScrollLock();
+
+  // 监听滚动
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (isConfirmed()) return;
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      enforceScrollBoundary();
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // 触摸滑动拦截
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    if (isConfirmed()) return;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isConfirmed()) return;
+    const currentY = e.touches[0].clientY;
+    const deltaY = currentY - touchStartY;
+    if (deltaY > 0) {
+      const maxScrollY = getMaxScrollY();
+      if (window.scrollY >= maxScrollY - 5) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  // 确认完成后：解锁滚动
+  const observer = new MutationObserver(() => {
+    if (holdBtn.classList.contains('ok')) {
+      unlockScroll();
+      observer.disconnect();
+    }
+  });
+  observer.observe(holdBtn, { attributes: true, attributeFilter: ['class'] });
+
+  // 重置确认后，重新锁定滚动
+  const resetBtn = document.getElementById('confirmReset');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      setTimeout(applyScrollLock, 50);
+    });
+  }
+
+  if (isConfirmed()) unlockScroll();
+
+  // ★ 关键修复：页面从 bfcache 恢复或外部链接返回时，重新校准
+  window.addEventListener('pageshow', (e) => {
+    // 无论是否来自 bfcache，都重新评估锁定状态
+    if (isConfirmed()) {
+      unlockScroll();
+    } else {
+      applyScrollLock();
+      // 延迟执行边界检查，确保布局已稳定
+      setTimeout(enforceScrollBoundary, 100);
+    }
+  });
+
+  // visibilitychange 作为补充（部分浏览器 bfcache 不触发 pageshow）
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      if (isConfirmed()) {
+        unlockScroll();
+      } else {
+        applyScrollLock();
+        setTimeout(enforceScrollBoundary, 100);
+      }
+    }
+  });
 })();
 
 /* ============================================================
