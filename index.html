@@ -447,7 +447,9 @@
     .menu-footer .prompt { color: var(--accent); }
 
     /* ============================================================
-       文案过场
+       文案过场（间奏页）
+       ★ 轻触提示固定底部往上 20px
+       ★ 文案区上下左右居中
     ============================================================ */
     .text-passage {
       position: relative;
@@ -457,7 +459,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 120px var(--pad) 0;
+      /* 上方留出顶部空间，底部由提示自身控制 */
+      padding: 100px var(--pad) 0;
       max-width: 820px;
       margin: 0 auto;
       cursor: pointer;
@@ -474,7 +477,8 @@
       justify-content: center;
       align-items: center;
       gap: 7vh;
-      padding: 0 0 20px;
+      /* 底部留出提示的空间，避免被遮挡 */
+      padding: 0 0 calc(20px + 60px + var(--safe-b));
     }
 
     .passage-line {
@@ -555,10 +559,11 @@
       font-weight: 300;
     }
 
+    /* ★ 轻触提示：固定在屏幕最下方往上 20px（含安全区） */
     .passage-tap {
       position: absolute;
       left: 50%;
-      bottom: calc(30px + var(--safe-b));
+      bottom: calc(20px + var(--safe-b));
       transform: translateX(-50%);
       display: inline-flex;
       align-items: center;
@@ -1530,7 +1535,7 @@
       }
       .passage-content {
         gap: 5.5vh;
-        padding-bottom: 16px;
+        padding-bottom: calc(16px + 60px + var(--safe-b));
       }
       .passage-line .passage-text { 
         font-size: 19px; 
@@ -1545,7 +1550,7 @@
       .passage-tap { 
         font-size: 9px; 
         letter-spacing: 2px; 
-        bottom: calc(30px + var(--safe-b));
+        bottom: calc(20px + var(--safe-b));
         padding: 8px 16px;
       }
 
@@ -1703,7 +1708,7 @@
   </div>
 </header>
 
-<!-- 文案过场 -->
+<!-- 文案过场（间奏页） -->
 <section class="text-passage" id="passage">
   <div class="passage-content">
     <div class="passage-line" data-passage>
@@ -1852,7 +1857,7 @@
 
 <!-- 03 须知 -->
 <section class="block" id="notice">
-  <div class="term-head" data-reveal>
+  <div class="term-head" data-reveal id="noticeHead">
     <span class="num">[03]</span>
     <span class="title">须知</span>
     <span class="en">notice.</span>
@@ -2170,11 +2175,7 @@
 
 <script>
 /* ============================================================
-   【会话与持久化核心】
-   - 使用 sessionStorage 标记当前会话（snow-session-alive）
-   - 大退网站重进（关闭浏览器/标签页后重新进入）时 sessionStorage 消失
-     → 检测到标记不存在 → 清除所有 localStorage 状态 → 完全重置
-   - 同一会话内刷新/外部链接返回 → 标记存在 → 保留所有 localStorage 状态
+   会话与持久化核心
    ============================================================ */
 const SESSION_KEY = 'snow-session-alive';
 
@@ -2188,29 +2189,20 @@ const STATE_KEYS = {
   more: 'snow-more-open'
 };
 
-/* 会话检测与重置 */
 (function initSession(){
   let isNewSession = false;
   try {
     isNewSession = sessionStorage.getItem(SESSION_KEY) !== '1';
-    // 标记当前会话存活
     sessionStorage.setItem(SESSION_KEY, '1');
-  } catch (e) {
-    // sessionStorage 不可用时（隐私模式等），视为新会话，但避免误清
-    isNewSession = false;
-  }
+  } catch (e) { isNewSession = false; }
 
   if (isNewSession) {
-    // 大退重进：清空所有持久化状态
     try {
       Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
-      // 清理旧的 sessionStorage 入场标记
       sessionStorage.removeItem('snow-intro-played');
     } catch (e) {}
   }
 
-  // 在同一会话内持续保持标记存活（多标签页共享）
-  // 监听页面可见性变化，确保从后台切回时标记仍存在
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
       try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
@@ -2224,15 +2216,12 @@ function readState(key, fallback) {
     return v === null ? fallback : v;
   } catch (e) { return fallback; }
 }
-
 function writeState(key, value) {
   try { localStorage.setItem(key, String(value)); } catch (e) {}
 }
-
 function removeState(key) {
   try { localStorage.removeItem(key); } catch (e) {}
 }
-
 function hasIntroPlayed() {
   return readState(STATE_KEYS.intro, '0') === '1';
 }
@@ -2282,7 +2271,6 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
   const passageLines = $$('.passage-line, .passage-end');
 
   if (hasIntroPlayed()) {
-    // 跳过入场动画，直接展示主页
     loader.classList.add('hidden');
     bootTitle.classList.add('show');
     bootScroll.classList.add('show');
@@ -2290,7 +2278,6 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
     if (audioBtn) audioBtn.classList.add('show');
     document.body.classList.remove('lock');
 
-    // 恢复间奏页进度
     const savedIdx = parseInt(readState(STATE_KEYS.passage, '0'), 10) || 0;
     if (savedIdx > 0) {
       passageLines.forEach((l, i) => {
@@ -2306,14 +2293,11 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
     return;
   }
 
-  // 首次访问（或大退重置后）：播放完整入场动画
   const lines = document.querySelectorAll('.loader-line');
   let delay = 300;
 
   lines.forEach((line) => {
-    setTimeout(() => {
-      line.classList.add('show');
-    }, delay);
+    setTimeout(() => { line.classList.add('show'); }, delay);
     delay += 1200;
   });
 
@@ -2504,6 +2488,8 @@ function toast(msg, ms = 2000) {
 
 /* ============================================================
    文案过场 —— 点一下出一行
+   ★ 完成前：页面最多滚动到轻触提示上方，不可继续下滑
+   ★ 完成后：解除限制，可自由下滑
    ============================================================ */
 (function(){
   const passage = document.getElementById('passage');
@@ -2535,6 +2521,86 @@ function toast(msg, ms = 2000) {
     document.body.classList.add('lock');
   }
 
+  /* ---------- 间奏页滚动限制 ----------
+     完成前：最多滚动到 passage 区域底部（轻触提示上方），
+     不能继续下滑进入下一节。
+     完成后：解除限制。
+  */
+  function getPassageMaxScrollY() {
+    // passage 区域底部在文档中的位置
+    const rect = passage.getBoundingClientRect();
+    const passageBottomDoc = rect.bottom + window.scrollY;
+    // 视口高度
+    const vh = window.innerHeight;
+    // 允许滚动的最大值：passage 底部刚好在视口底部
+    // 这样轻触提示（固定在视口底部往上 20px）可见，且无法再往下
+    return Math.max(0, passageBottomDoc - vh);
+  }
+
+  function enforcePassageBoundary() {
+    if (isFinished) return;
+    const maxY = getPassageMaxScrollY();
+    if (window.scrollY > maxY) {
+      window.scrollTo({ top: maxY, behavior: 'smooth' });
+    }
+  }
+
+  // 滚动监听：仅限制向下越界
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (isFinished) return;
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      enforcePassageBoundary();
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // 触摸滑动：仅拦截「手指上滑、试图继续向下浏览」
+  let touchStartY = 0;
+  window.addEventListener('touchstart', (e) => {
+    if (isFinished) return;
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (isFinished) return;
+    const currentY = e.touches[0].clientY;
+    const deltaY = touchStartY - currentY; // >0 表示手指上滑，页面下滚
+    if (deltaY > 0) {
+      const maxY = getPassageMaxScrollY();
+      if (window.scrollY >= maxY - 2) {
+        e.preventDefault();
+      }
+    }
+    // 手指下滑（回看上方）不拦截
+  }, { passive: false });
+
+  // 滚轮：仅拦截向下越界
+  window.addEventListener('wheel', (e) => {
+    if (isFinished) return;
+    if (e.deltaY > 0) {
+      const maxY = getPassageMaxScrollY();
+      if (window.scrollY >= maxY - 2) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  // 键盘：仅拦截向下越界
+  window.addEventListener('keydown', (e) => {
+    if (isFinished) return;
+    const downKeys = ['ArrowDown', 'PageDown', 'End', ' '];
+    if (downKeys.includes(e.key)) {
+      const maxY = getPassageMaxScrollY();
+      if (window.scrollY >= maxY - 2) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  // 每次点击推进一行
   function showNext() {
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
@@ -2543,18 +2609,19 @@ function toast(msg, ms = 2000) {
     lines[idx].classList.add('in');
     idx++;
     writeState(STATE_KEYS.passage, idx);
-    
+
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
       isFinished = true;
-      document.body.classList.remove('lock'); 
+      document.body.classList.remove('lock');
       writeState(STATE_KEYS.passage, lines.length);
+      // 完成后允许继续下滑（解除限制）
     }
   }
 
   let touchStartTime = 0;
   let touchStartPos = { x: 0, y: 0 };
-  
+
   passage.addEventListener('touchstart', (e) => {
     if (isFinished) return;
     const touch = e.touches[0];
@@ -2583,7 +2650,7 @@ function toast(msg, ms = 2000) {
     buzz(6);
   });
 
-  let touchStartY = 0;
+  // 在未完成时阻止页面被点击区域内部滚动
   passage.addEventListener('touchstart', (e) => {
     if (document.body.classList.contains('lock')) {
       touchStartY = e.touches[0].clientY;
@@ -2609,6 +2676,7 @@ function toast(msg, ms = 2000) {
     }
   }, { passive: false });
 
+  // 提示词显示
   const ioTap = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && idx < lines.length && !isFinished) {
@@ -2620,10 +2688,11 @@ function toast(msg, ms = 2000) {
   }, { threshold: 0.3 });
   ioTap.observe(passage);
 
-  let ticking = false;
+  // 视差
+  let ticking2 = false;
   function onScroll(){
-    if (ticking) return;
-    ticking = true;
+    if (ticking2) return;
+    ticking2 = true;
     requestAnimationFrame(() => {
       const vh = window.innerHeight;
       lines.forEach((el, i) => {
@@ -2634,11 +2703,20 @@ function toast(msg, ms = 2000) {
         const speed = 4 + (i % 3) * 3;
         el.style.transform = `translateY(${(p * speed).toFixed(2)}px)`;
       });
-      ticking = false;
+      ticking2 = false;
     });
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
+  // 页面重新可见时重新校准
+  function recalibratePassage() {
+    if (!isFinished) enforcePassageBoundary();
+  }
+  window.addEventListener('pageshow', recalibratePassage);
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') recalibratePassage();
+  });
 })();
 
 /* ============================================================
@@ -2671,7 +2749,6 @@ function toast(msg, ms = 2000) {
 
   const buttons = row.querySelectorAll('button');
 
-  // 恢复 MBTI
   const savedMbti = parseInt(readState(STATE_KEYS.mbti, '-1'), 10);
   if (savedMbti >= 0 && savedMbti < buttons.length) {
     const btn = buttons[savedMbti];
@@ -2861,22 +2938,49 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   03 须知 —— 精准定位
+   03 须知
+   更新 不管点击 NOTE 几，都强制回到「[03] 须知」标题上方 10px
    ============================================================ */
 (function(){
   const noticeGrid = document.getElementById('noticeGrid');
-  if (!noticeGrid) return;
+  const noticeHead = document.getElementById('noticeHead');
+  if (!noticeGrid || !noticeHead) return;
 
   const cols = $$('.notice-col', noticeGrid);
   if (!cols.length) return;
 
-  const OFFSET_PX = 20;
+  // 标题顶部距浏览器顶部 10px
+  const HEAD_TOP_OFFSET = 10;
 
+  // 恢复须知折叠状态
   const savedNotice = parseInt(readState(STATE_KEYS.notice, '0'), 10);
   if (!isNaN(savedNotice)) {
     cols.forEach((c, i) => {
       c.dataset.open = (i === savedNotice) ? 'true' : 'false';
     });
+  }
+
+  // 计算「[03] 须知」标题顶部的文档绝对位置
+  function getNoticeHeadTop() {
+    const rect = noticeHead.getBoundingClientRect();
+    return rect.top + window.scrollY;
+  }
+
+  // 强制滚动到标题上方 10px（立即执行，无平滑）
+  function snapToNoticeHead() {
+    const targetY = Math.max(0, getNoticeHeadTop() - HEAD_TOP_OFFSET);
+    // 临时关闭 CSS 平滑，避免与后续动画冲突
+    const html = document.documentElement;
+    const prev = html.style.scrollBehavior;
+    html.style.scrollBehavior = 'auto';
+    window.scrollTo(0, targetY);
+    html.style.scrollBehavior = prev;
+  }
+
+  // 平滑滚动到标题上方 10px
+  function smoothToNoticeHead() {
+    const targetY = Math.max(0, getNoticeHeadTop() - HEAD_TOP_OFFSET);
+    window.scrollTo({ top: targetY, behavior: 'smooth' });
   }
 
   cols.forEach(col => {
@@ -2887,34 +2991,26 @@ function toast(msg, ms = 2000) {
       const index = parseInt(col.dataset.colIndex, 10);
       const isOpen = col.dataset.open === 'true';
 
+      cols.forEach(c => { c.dataset.open = 'false'; });
+
+      snapToNoticeHead();
+
       if (!isOpen) {
-        const prevOpenCol = cols.find(c => c !== col && c.dataset.open === 'true');
-
-        let targetScrollY = null;
-        if (prevOpenCol) {
-          const prevRect = prevOpenCol.getBoundingClientRect();
-          const prevDocTop = prevRect.top + window.scrollY;
-          targetScrollY = prevDocTop - OFFSET_PX;
-        }
-
-        cols.forEach(c => {
-          if (c !== col) c.dataset.open = 'false';
-        });
-
+        // 3. 展开目标栏目
         col.dataset.open = 'true';
         writeState(STATE_KEYS.notice, index);
         buzz(8);
 
-        if (targetScrollY !== null) {
-          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-          targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
+        requestAnimationFrame(() => {
           requestAnimationFrame(() => {
-            window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
+            const targetY = Math.max(0, getNoticeHeadTop() - HEAD_TOP_OFFSET);
+            if (Math.abs(window.scrollY - targetY) > 2) {
+              window.scrollTo(0, targetY);
+            }
           });
-        }
+        });
 
       } else {
-        col.dataset.open = 'false';
         writeState(STATE_KEYS.notice, -1);
         buzz(8);
       }
@@ -2994,7 +3090,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   滚动锁：确认前限制滚动到“须知”区域底部
+   滚动限制：确认前可上滑，不可下滑进入「更多」
    ============================================================ */
 (function(){
   const noticeSection = document.getElementById('notice');
@@ -3013,20 +3109,6 @@ function toast(msg, ms = 2000) {
     return Math.max(0, noticeBottomDoc - vh + 20);
   }
 
-  function unlockScroll() {
-    document.body.classList.remove('scroll-locked-to-notice');
-    document.documentElement.style.overflow = '';
-    document.body.style.overflow = '';
-  }
-
-  function applyScrollLock() {
-    if (isConfirmed()) {
-      unlockScroll();
-      return;
-    }
-    document.body.classList.add('scroll-locked-to-notice');
-  }
-
   function enforceScrollBoundary() {
     if (isConfirmed()) return;
     const maxScrollY = getMaxScrollY();
@@ -3034,8 +3116,6 @@ function toast(msg, ms = 2000) {
       window.scrollTo({ top: maxScrollY, behavior: 'smooth' });
     }
   }
-
-  applyScrollLock();
 
   let ticking = false;
   window.addEventListener('scroll', () => {
@@ -3057,10 +3137,31 @@ function toast(msg, ms = 2000) {
   window.addEventListener('touchmove', (e) => {
     if (isConfirmed()) return;
     const currentY = e.touches[0].clientY;
-    const deltaY = currentY - touchStartY;
+    const deltaY = touchStartY - currentY;
     if (deltaY > 0) {
       const maxScrollY = getMaxScrollY();
-      if (window.scrollY >= maxScrollY - 5) {
+      if (window.scrollY >= maxScrollY - 2) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  window.addEventListener('wheel', (e) => {
+    if (isConfirmed()) return;
+    if (e.deltaY > 0) {
+      const maxScrollY = getMaxScrollY();
+      if (window.scrollY >= maxScrollY - 2) {
+        e.preventDefault();
+      }
+    }
+  }, { passive: false });
+
+  window.addEventListener('keydown', (e) => {
+    if (isConfirmed()) return;
+    const downKeys = ['ArrowDown', 'PageDown', 'End', ' '];
+    if (downKeys.includes(e.key)) {
+      const maxScrollY = getMaxScrollY();
+      if (window.scrollY >= maxScrollY - 2) {
         e.preventDefault();
       }
     }
@@ -3068,7 +3169,6 @@ function toast(msg, ms = 2000) {
 
   const observer = new MutationObserver(() => {
     if (holdBtn.classList.contains('ok')) {
-      unlockScroll();
       observer.disconnect();
     }
   });
@@ -3077,17 +3177,12 @@ function toast(msg, ms = 2000) {
   const resetBtn = document.getElementById('confirmReset');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
-      setTimeout(applyScrollLock, 50);
+      setTimeout(enforceScrollBoundary, 50);
     });
   }
 
-  if (isConfirmed()) unlockScroll();
-
   function recalibrate() {
-    if (isConfirmed()) {
-      unlockScroll();
-    } else {
-      applyScrollLock();
+    if (!isConfirmed()) {
       setTimeout(enforceScrollBoundary, 100);
     }
   }
