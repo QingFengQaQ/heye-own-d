@@ -141,9 +141,8 @@
     .snow-layer span {
       position: absolute;
       top: -10vh;
-      font-size: clamp(6px, 1.2vw, 10px); /* 移动端自适应极小 */
+      font-size: clamp(6px, 1.2vw, 10px);
       color: rgba(180, 225, 255, 0.65); 
-      /* 荧光特效：多重阴影叠加 */
       text-shadow: 
         0 0 4px rgba(255, 255, 255, 0.8),
         0 0 8px rgba(160, 220, 255, 0.6),
@@ -203,7 +202,6 @@
       z-index: 2;
     }
     
-    /* 背景星光 */
     .boot-stage::before {
       content: ""; position: absolute; inset: 0; pointer-events: none;
       background-image:
@@ -224,7 +222,6 @@
       display: flex; flex-direction: column; justify-content: center;
     }
 
-    /* 首屏标题装饰 */
     .boot-title {
       margin: 32px 0 40px;
       opacity: 0; transform: translateY(24px);
@@ -236,15 +233,12 @@
     }
     .boot-title.show { opacity: 1; transform: none; }
     
-    /* 大字组合：背景描边 + 前景渐变 */
     .title-main {
       position: relative;
       flex: 1;
     }
     .title-main h1 {
-      /* 强制使用 Google 宋体 */
       font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; 
-      /* 开启斜体 */
       font-style: italic; 
       font-weight: 400;
       font-size: min(28vw, 120px); 
@@ -259,7 +253,6 @@
       position: relative; z-index: 2;
     }
 
-    /* 背面虚影描边效果，同步宋体斜体 */
     .title-main h1::after {
       content: "何也";
       font-family: "Noto Serif SC", "Songti SC", "SimSun", serif; 
@@ -273,7 +266,6 @@
       filter: blur(2px);
     }
 
-    /* 竖排印章与副标题 */
     .title-side {
       display: flex;
       flex-direction: column;
@@ -314,7 +306,6 @@
       opacity: 0.8;
     }
 
-    /* 底部滑动引导 */
     .boot-scroll {
       position: relative; z-index: 2;
       display: flex; flex-direction: column; align-items: center;
@@ -372,6 +363,7 @@
       width: 38px; height: 38px;
       display: grid; place-items: center;
       position: relative;
+      min-width: 44px; min-height: 44px;
     }
     .menu-btn::before {
       content: ""; position: absolute; inset: 0;
@@ -454,7 +446,7 @@
     .menu-footer .prompt { color: var(--accent); }
 
     /* ============================================================
-       文案过场 —— 点一下出一行
+       文案过场 —— 点一下出一行（移动端优化）
     ============================================================ */
     .text-passage {
       position: relative;
@@ -470,6 +462,9 @@
       max-width: 820px;
       margin: 0 auto;
       cursor: pointer;
+      -webkit-user-select: none;
+      user-select: none;
+      touch-action: pan-y;
     }
 
     .passage-line {
@@ -550,7 +545,6 @@
       font-weight: 300;
     }
 
-    /* 点击提示 */
     .passage-tap {
       margin-top: 24px;
       display: inline-flex;
@@ -759,6 +753,7 @@
       border: 0;
       border-right: 1px solid var(--line);
       transition: background .35s var(--ease);
+      min-height: 64px;
     }
     .mbti-row button:last-child { border-right: 0; }
 
@@ -795,7 +790,6 @@
       transform: translateY(-2px);
     }
 
-    /* 提示词 */
     .mbti-hint {
       display: flex;
       align-items: center;
@@ -827,7 +821,6 @@
       animation: tapBlink 1.8s ease-in-out infinite;
     }
 
-    /* 详细内容 */
     .mbti-detail {
       max-height: 0;
       overflow: hidden;
@@ -842,7 +835,6 @@
     
     .mbti-detail .detail-text-wrap { width: 100%; }
     
-    /* 右侧中文小标题 */
     .mbti-detail .detail-title {
       display: block;
       font-size: 13px;
@@ -852,7 +844,6 @@
       margin-bottom: 6px;
     }
     
-    /* 右侧释义 */
     .mbti-detail .detail-text {
       font-size: 12.5px;
       font-weight: 300;
@@ -971,6 +962,7 @@
       padding-bottom: 4px;
       border-bottom: 1px solid transparent;
       transition: color .3s, border-color .3s, transform .4s var(--ease-out);
+      min-height: 44px;
     }
     .ghost-btn .dot {
       width: 5px; height: 5px; border-radius: 50%;
@@ -1011,6 +1003,7 @@
       position: relative;
       transition: color .35s, padding-left .35s;
       flex-shrink: 0;
+      min-height: 44px;
     }
     .style-list button::before {
       content: ""; position: absolute;
@@ -1050,6 +1043,7 @@
       backdrop-filter: blur(4px);
       border-bottom: 1px solid var(--line);
       overflow: hidden;
+      scroll-margin-top: 70px;
     }
     .notice-col:last-child { border-bottom: 0; }
     .col-head {
@@ -1057,6 +1051,7 @@
       width: 100%; padding: 18px 20px;
       text-align: left;
       transition: background .3s;
+      min-height: 56px;
     }
     .col-head:hover { background: rgba(220, 240, 255, 0.35); }
     .col-head .note-tag {
@@ -1105,7 +1100,6 @@
     .notice-col[data-open="true"] .col-head .col-toggle .bar:nth-child(1) { transform: rotate(180deg); }
     .notice-col[data-open="true"] .col-head .col-toggle .bar:nth-child(2) { transform: rotate(180deg); opacity: 0; }
     
-    /* 关键修改：自动适应高度 */
     .col-body {
       max-height: 0; 
       overflow: hidden;
@@ -1113,7 +1107,6 @@
     }
     .notice-col[data-open="true"] .col-body { 
       max-height: max-content; 
-      /* 或者设置一个极大的兜底高度也可以，比如 max-height: 3000px; 这样不会裁剪内容 */
     }
     
     .col-items {
@@ -1279,6 +1272,7 @@
       font-family: var(--mono); font-size: 8px;
       letter-spacing: 2px; color: var(--text-mute);
       opacity: 0; transition: opacity .5s; pointer-events: none;
+      min-height: 44px;
     }
     .ok-wrap .confirm-reset { opacity: 1; pointer-events: auto; }
 
@@ -1313,6 +1307,7 @@
       padding: 22px 22px;
       text-align: left;
       position: relative;
+      min-height: 64px;
     }
     .more-head .more-idx {
       font-family: var(--mono);
@@ -1365,7 +1360,6 @@
     }
     .more-card[data-open="true"] .more-body { max-height: 800px; }
 
-    /* 链接网格：间距加大 */
     .more-links {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -1378,6 +1372,7 @@
       padding: 16px 18px;
       border: 1px solid var(--line);
       background: rgba(255, 255, 255, 0.55);
+      min-height: 52px;
     }
     .more-link .link-name {
       font-size: 13px; font-weight: 300;
@@ -1392,7 +1387,6 @@
       color: var(--accent);
       transform: translate(2px, -2px);
     }
-    /* 跳转卡片特定样式 */
     .jump-card .more-head {
       text-decoration: none;
       color: inherit;
@@ -1476,7 +1470,7 @@
     .audio-toggle.muted { color: var(--text-mute); }
 
     /* ============================================================
-       响应式
+       响应式 —— 移动端重点优化
     ============================================================ */
     @media (max-width: 900px) {
       .style-stage { grid-template-columns: 1fr; gap: 26px; }
@@ -1513,10 +1507,27 @@
     }
 
     @media (max-width: 600px) {
-      .text-passage { gap: 6vh; padding: 100px 22px 100px; }
-      .passage-line .passage-text { font-size: 18px; line-height: 1.95; letter-spacing: 0.05em; }
-      .passage-end .end-text { font-size: 11px; letter-spacing: 0.4em; text-indent: 0.4em; }
-      .passage-tap { font-size: 9px; letter-spacing: 2px; }
+      .text-passage { 
+        gap: 5.5vh; 
+        padding: 80px 18px 80px; 
+        min-height: 100svh;
+      }
+      .passage-line .passage-text { 
+        font-size: 19px; 
+        line-height: 1.95; 
+        letter-spacing: 0.05em; 
+      }
+      .passage-end .end-text { 
+        font-size: 11px; 
+        letter-spacing: 0.4em; 
+        text-indent: 0.4em; 
+      }
+      .passage-tap { 
+        font-size: 9px; 
+        letter-spacing: 2px; 
+        min-height: 44px;
+        padding: 8px 16px;
+      }
 
       .about-name { gap: 16px; margin-bottom: 24px; }
       .about-name .name-cn { font-size: 52px; letter-spacing: 0.12em; }
@@ -1528,14 +1539,14 @@
 
       .about-mbti { margin-bottom: 38px; border-radius: 5px; }
       .mbti-head { padding: 13px 16px; }
-      .mbti-row button { padding: 22px 4px; }
+      .mbti-row button { padding: 22px 4px; min-height: 60px; }
       .mbti-row button .m-letter { font-size: 30px; }
       .mbti-hint { padding: 12px 16px; font-size: 8px; }
       .mbti-detail-inner { padding: 14px 16px; }
       .mbti-detail .detail-title { font-size: 12px; }
       .mbti-detail .detail-text { font-size: 11.5px; line-height: 1.7; }
 
-      .col-head { padding: 16px 16px; gap: 10px; }
+      .col-head { padding: 16px 16px; gap: 10px; min-height: 52px; }
       .col-head .col-name { font-size: 14px; letter-spacing: 0.2em; }
       .col-head .col-count { font-size: 9px; }
       .col-head .col-toggle { width: 20px; height: 20px; }
@@ -1553,19 +1564,24 @@
         grid-template-columns: 30px 1fr auto;
         gap: 12px;
         padding: 18px 16px;
+        min-height: 60px;
       }
       .more-head .more-title { font-size: 20px; letter-spacing: 0.1em; }
       .more-head .more-sub { font-size: 11px; }
       .more-toggle { width: 30px; height: 30px; }
       .more-links { grid-template-columns: 1fr; gap: 12px; padding: 4px 16px 20px; }
-      .more-link { padding: 14px 16px; }
+      .more-link { padding: 14px 16px; min-height: 48px; }
 
-      /* 首屏移动端调整 */
       .boot-title { margin: 20px 0 30px; }
       .title-main h1 { font-size: min(32vw, 100px); }
       .title-side .v-text { font-size: 13px; letter-spacing: 0.4em; }
       .title-side .seal { width: 28px; height: 28px; font-size: 10px; }
       .title-side .sub-en { font-size: 14px; }
+
+      section.block { padding: 56px 0 44px; }
+      .term-head { margin-bottom: 28px; padding-bottom: 16px; }
+      .term-head .title { font-size: 20px; }
+      .term-head .en { font-size: 10px; }
     }
 
     @media (min-width: 768px) {
@@ -1650,11 +1666,9 @@
 <header class="boot-stage" id="top">
   <div class="boot-window">
     <div class="boot-title" id="bootTitle">
-      <!-- 左侧大字区 -->
       <div class="title-main">
         <h1>何也</h1>
       </div>
-      <!-- 右侧竖排装饰区 -->
       <div class="title-side">
         <span class="v-text">江南无所有，聊赠一枝春</span>
         <span class="seal">何<br>也</span>
@@ -1663,7 +1677,6 @@
     </div>
   </div>
 
-  <!-- 底部引导 -->
   <div class="boot-scroll" id="bootScroll">
     <span class="scroll-line"></span>
     <span class="scroll-text">雪天路滑请慢步探索</span>
@@ -1753,13 +1766,11 @@
         </button>
       </div>
 
-      <!-- 提示词：未点击时显示 -->
       <div class="mbti-hint" id="aboutMbtiHint">
         <span class="hint-dot"></span>
         点击字母 · 查看详细释义
       </div>
 
-      <!-- 详细内容：点击后展开 -->
       <div class="mbti-detail" id="aboutMbtiDetail">
         <div class="mbti-detail-inner">
           <div class="detail-text-wrap">
@@ -1827,7 +1838,6 @@
 
   <div class="notice-grid" id="noticeGrid">
 
-    <!-- NOTE 001 · 个人须知 -->
     <div class="notice-col" data-open="true">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 001</span>
@@ -1863,7 +1873,6 @@
       </div>
     </div>
 
-    <!-- NOTE 002 · 排版须知 -->
     <div class="notice-col" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 002</span>
@@ -1885,7 +1894,6 @@
       </div>
     </div>
 
-    <!-- NOTE 003 · 下单 -->
     <div class="notice-col" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 003</span>
@@ -1904,7 +1912,6 @@
       </div>
     </div>
 
-    <!-- NOTE 004 · 价格 -->
     <div class="notice-col" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 004</span>
@@ -1923,7 +1930,6 @@
       </div>
     </div>
 
-    <!-- NOTE 005 · 加急 -->
     <div class="notice-col" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 005</span>
@@ -1942,7 +1948,6 @@
       </div>
     </div>
 
-    <!-- NOTE 006 · 注意 -->
     <div class="notice-col" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 006</span>
@@ -1961,7 +1966,6 @@
       </div>
     </div>
 
-    <!-- NOTE 007 · 教学 -->
     <div class="notice-col" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 007</span>
@@ -2012,7 +2016,6 @@
 
   <div class="more-stage" data-reveal>
 
-    <!-- 卡片 01 · 历史 -->
     <div class="more-card" data-open="false">
       <button class="more-head hover-float" type="button">
         <span class="more-idx">01</span>
@@ -2041,7 +2044,6 @@
       </div>
     </div>
 
-    <!-- 卡片 02 · 模板 -->
     <div class="more-card" data-open="false">
       <button class="more-head hover-float" type="button">
         <span class="more-idx">02</span>
@@ -2066,7 +2068,6 @@
       </div>
     </div>
 
-    <!-- 卡片 03 · 颜色 -->
     <div class="more-card" data-open="false">
       <button class="more-head hover-float" type="button">
         <span class="more-idx">03</span>
@@ -2123,7 +2124,6 @@
       </div>
     </div>
 
-        <!-- 卡片 04 · 总体 -->
     <div class="more-card jump-card" data-open="false">
       <a href="https://www.kdocs.cn/l/chwpxQ5EsNOG" target="_blank" rel="noopener" class="more-head hover-float">
         <span class="more-idx">04</span>
@@ -2148,34 +2148,23 @@
 
 <script>
 /* ============================================================
-   雪花飘屏生成 —— 更小、更淡、带荧光
+   雪花飘屏生成
    ============================================================ */
 (function(){
   const layer = document.getElementById('snowLayer');
   if (!layer) return;
   const flakes = ['❄', '❅', '❆', '✧', '·', '❄', '❅', '❆'];
-  const count = 150; // 增加数量，弥补变小后的稀疏感
+  const count = 150;
   for (let i = 0; i < count; i++) {
     const el = document.createElement('span');
     el.textContent = flakes[Math.floor(Math.random() * flakes.length)];
     el.style.left = (Math.random() * 100) + '%';
-    
-    // 字体大小在 8px 到 16px 之间随机
     el.style.fontSize = (Math.random() * 8 + 8) + 'px'; 
-    
-    // 动画时长 10s - 20s，更舒缓
     el.style.animationDuration = (Math.random() * 10 + 10) + 's';
     el.style.animationDelay = (Math.random() * 15) + 's';
-    
-    // 整体透明度在 0.3 - 0.7 之间
     el.style.opacity = (Math.random() * 0.4 + 0.3);
-    
-    // 随机分配颜色（纯白或淡蓝）
     el.style.color = Math.random() > 0.5 ? 'rgba(200, 235, 255, 0.7)' : 'rgba(255, 255, 255, 0.6)';
-    
-    // 横向漂移距离稍微缩小（-20px 到 +20px），显得更轻盈
     el.style.setProperty('--drift', (Math.random() * 40 - 20) + 'px');
-    
     layer.appendChild(el);
   }
 })();
@@ -2192,24 +2181,20 @@
   
   const lines = document.querySelectorAll('.loader-line');
   
-  // 逐句显现的时间控制
   let delay = 300;
   
   lines.forEach((line) => {
     setTimeout(() => {
       line.classList.add('show');
     }, delay);
-    // 每一句间隔 1.2 秒
     delay += 1200;
   });
 
-  // 等最后一句出来，再停留 1 秒，然后进入主页
   const totalTime = delay + 1000;
 
   setTimeout(() => {
     loader.classList.add('hidden');
     
-    // 主页元素渐次出现
     setTimeout(() => {
       bootTitle.classList.add('show');
       bootScroll.classList.add('show');
@@ -2319,7 +2304,119 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   文案过场 —— 点一下出一行（严格锁定页面直到点完）
+   【新增】"雪天路滑请慢步探索" 提示下方滑自动进入间奏页
+   ============================================================ */
+(function(){
+  const bootScroll = document.getElementById('bootScroll');
+  const passage = document.getElementById('passage');
+  if (!bootScroll || !passage) return;
+
+  // 获取提示区域底部位置（含padding-bottom）
+  function getBootScrollBottom() {
+    const rect = bootScroll.getBoundingClientRect();
+    return rect.bottom + window.scrollY;
+  }
+
+  // 滑动阈值：当提示区域底部距离视口顶部小于这个值时，触发自动进入
+  // 视口高度的一半，意味着用户已经滑过提示区域的大半
+  const THRESHOLD_RATIO = 0.35;
+
+  let autoEntered = false;
+
+  function checkScroll() {
+    if (autoEntered) return;
+
+    // 如果页面已经锁定了（间奏页未点完），不重复触发
+    if (document.body.classList.contains('lock')) {
+      // 但如果是间奏页正在锁定，也不触发
+      return;
+    }
+
+    // 当前滚动位置
+    const scrollY = window.scrollY || window.pageYOffset;
+    // 提示区域底部在文档中的位置
+    const bootBottom = getBootScrollBottom();
+    // 视口高度
+    const vh = window.innerHeight;
+
+    // 当提示区域底部进入视口下方约 65% 处时，开始自动滑动
+    // 即：scrollY + vh * THRESHOLD_RATIO > bootBottom
+    if (scrollY + vh * THRESHOLD_RATIO > bootBottom) {
+      autoEntered = true;
+      // 平滑滚动到间奏页顶部
+      const passageTop = passage.getBoundingClientRect().top + scrollY;
+      window.scrollTo({
+        top: passageTop,
+        behavior: 'smooth'
+      });
+      // 滚动完成后锁定页面（间奏页锁定逻辑已存在，此处确保锁定）
+      setTimeout(() => {
+        // 如果间奏页还没被点完，锁定页面
+        const passageLines = $$('.passage-line, .passage-end');
+        const lastLine = passageLines[passageLines.length - 1];
+        if (lastLine && !lastLine.classList.contains('in')) {
+          document.body.classList.add('lock');
+        }
+      }, 600);
+    }
+  }
+
+  // 使用 IntersectionObserver 监听提示区域
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      // 当提示区域底部进入视口时，准备触发
+      if (entry.isIntersecting) {
+        // 检查实际滚动位置
+        checkScroll();
+      }
+    });
+  }, {
+    // 当提示区域底部距离视口底部 35% 时触发
+    rootMargin: `0px 0px -${Math.round(THRESHOLD_RATIO * 100)}% 0px`,
+    threshold: 0
+  });
+
+  // 监听提示区域的父容器（boot-stage）
+  const bootStage = document.querySelector('.boot-stage');
+  if (bootStage) {
+    observer.observe(bootStage);
+  }
+
+  // 备用：滚动监听
+  let ticking = false;
+  window.addEventListener('scroll', () => {
+    if (autoEntered) return;
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      checkScroll();
+      ticking = false;
+    });
+  }, { passive: true });
+
+  // 触摸滑动监听（移动端）
+  let touchStartY = 0;
+  let touchMoved = false;
+  window.addEventListener('touchstart', (e) => {
+    if (autoEntered) return;
+    touchStartY = e.touches[0].clientY;
+    touchMoved = false;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', (e) => {
+    if (autoEntered) return;
+    const currentY = e.touches[0].clientY;
+    const deltaY = touchStartY - currentY;
+    // 向下滑动（deltaY > 0）且滑动距离大于 30px
+    if (deltaY > 30) {
+      touchMoved = true;
+      checkScroll();
+    }
+  }, { passive: true });
+})();
+
+/* ============================================================
+   文案过场 —— 点一下出一行（移动端优化版）
    ============================================================ */
 (function(){
   const passage = document.getElementById('passage');
@@ -2329,8 +2426,8 @@ function toast(msg, ms = 2000) {
 
   let idx = 0;
   let isFinished = false;
+  let isTouching = false;
 
-  // 页面初始在没点完时，必须锁定
   document.body.classList.add('lock');
 
   function showNext() {
@@ -2341,7 +2438,6 @@ function toast(msg, ms = 2000) {
     lines[idx].classList.add('in');
     idx++;
     
-    // 点完最后一句，解锁滚动并设置状态
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
       isFinished = true;
@@ -2349,17 +2445,73 @@ function toast(msg, ms = 2000) {
     }
   }
 
-  let started = false;
-  passage.addEventListener('click', () => {
-    if (!started) {
-      started = true;
+  let touchStartTime = 0;
+  let touchStartPos = { x: 0, y: 0 };
+  
+  passage.addEventListener('touchstart', (e) => {
+    if (isFinished) return;
+    const touch = e.touches[0];
+    touchStartTime = Date.now();
+    touchStartPos = { x: touch.clientX, y: touch.clientY };
+    isTouching = true;
+  }, { passive: true });
+
+  passage.addEventListener('touchend', (e) => {
+    if (isFinished || !isTouching) return;
+    isTouching = false;
+    
+    const touch = e.changedTouches[0];
+    const deltaX = Math.abs(touch.clientX - touchStartPos.x);
+    const deltaY = Math.abs(touch.clientY - touchStartPos.y);
+    const duration = Date.now() - touchStartTime;
+    
+    if (deltaX < 10 && deltaY < 10 && duration < 300) {
+      showNext();
+      buzz(6);
     }
-    if (isFinished) return; // 点完了就不能再点了
+  }, { passive: true });
+
+  passage.addEventListener('click', (e) => {
+    if (isTouching) return;
+    if (isFinished) return;
     showNext();
     buzz(6);
   });
 
-  // 处理提示词的显示与隐藏
+  let touchStartY = 0;
+  
+  passage.addEventListener('touchstart', (e) => {
+    if (document.body.classList.contains('lock')) {
+      touchStartY = e.touches[0].clientY;
+    }
+  }, { passive: true });
+
+  passage.addEventListener('touchmove', (e) => {
+    if (!document.body.classList.contains('lock')) return;
+    const y = e.touches[0].clientY;
+    const deltaY = y - touchStartY;
+    
+    if (deltaY > 20) {
+      e.preventDefault();
+    }
+    if (deltaY < -20) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  passage.addEventListener('wheel', (e) => {
+    if (document.body.classList.contains('lock')) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  window.addEventListener('keydown', (e) => {
+    if (!document.body.classList.contains('lock')) return;
+    if (['ArrowDown', 'ArrowUp', 'PageDown', 'PageUp', 'Home', 'End', ' '].includes(e.key)) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
   const ioTap = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && idx < lines.length) {
@@ -2371,7 +2523,6 @@ function toast(msg, ms = 2000) {
   }, { threshold: 0.3 });
   ioTap.observe(passage);
 
-  // 辅助视差
   let ticking = false;
   function onScroll(){
     if (ticking) return;
@@ -2394,7 +2545,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   01 自述 —— 逐句浮现 + MBTI 卡片
+   01 自述
    ============================================================ */
 (function(){
   const words = $$('[data-about-word]');
@@ -2417,7 +2568,6 @@ function toast(msg, ms = 2000) {
     });
   }
 
-  /* MBTI 交互 —— 点击字母才展开详细 */
   const row = $('#aboutMbti');
   const hint = $('#aboutMbtiHint');
   const detail = $('#aboutMbtiDetail');
@@ -2428,14 +2578,12 @@ function toast(msg, ms = 2000) {
 
   row.querySelectorAll('button').forEach(btn => {
     btn.addEventListener('click', () => {
-      const name = btn.dataset.name || '';          // 获取中文小标题
-      const detailText = btn.dataset.detail || '';  // 获取释义
-
+      const name = btn.dataset.name || '';
+      const detailText = btn.dataset.detail || '';
       const isSame = btn.classList.contains('on');
 
       row.querySelectorAll('button').forEach(b => b.classList.remove('on'));
 
-      // 再次点击同一个，收起
       if (isSame) {
         detail.classList.remove('open');
         hint.classList.remove('hidden');
@@ -2445,7 +2593,6 @@ function toast(msg, ms = 2000) {
 
       btn.classList.add('on');
 
-      // 仅更新右侧小标题和释义
       if (titleEl) titleEl.textContent = name; 
 
       if (textEl) {
@@ -2466,7 +2613,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   02 风格 —— 可滑动 + 自动滚动到高亮
+   02 风格
    ============================================================ */
 (function(){
   const STYLES = [
@@ -2584,11 +2731,17 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   03 须知 —— 大栏开关，一次最多展开一栏，带平滑锚点
+   03 须知 —— 精准定位：上一栏收起后，让上一栏顶部位于浏览器顶端下方 20px 处
    ============================================================ */
 (function(){
-  const cols = $$('.notice-col');
+  const noticeGrid = document.getElementById('noticeGrid');
+  if (!noticeGrid) return;
+
+  const cols = $$('.notice-col', noticeGrid);
   if (!cols.length) return;
+
+  // 偏移量：20px
+  const OFFSET_PX = 20;
 
   cols.forEach(col => {
     const head = col.querySelector('.col-head');
@@ -2597,31 +2750,45 @@ function toast(msg, ms = 2000) {
     head.addEventListener('click', () => {
       const isOpen = col.dataset.open === 'true';
 
-      // 如果是打开一栏（而不是关闭当前栏）
       if (!isOpen) {
-        // 1. 获取当前点击栏目的 Y 坐标（减去顶部导航的遮挡距离）
-        const top = col.getBoundingClientRect().top + window.scrollY - 20;
+        // 找到当前已经打开的那一栏（即"上一栏"，即将收起的栏）
+        const prevOpenCol = cols.find(c => c !== col && c.dataset.open === 'true');
 
-        // 2. 强制关闭其他所有栏
+        // 先记录上一栏在文档中的绝对位置（在收起之前）
+        let targetScrollY = null;
+        if (prevOpenCol) {
+          const prevRect = prevOpenCol.getBoundingClientRect();
+          const prevDocTop = prevRect.top + window.scrollY;
+          // 目标：上一栏顶部距离浏览器顶端 20px
+          targetScrollY = prevDocTop - OFFSET_PX;
+        }
+
+        // 关闭其他所有栏（包括上一栏）
         cols.forEach(c => {
           if (c !== col) c.dataset.open = 'false';
         });
 
-        // 3. 展开当前栏
+        // 展开当前栏
         col.dataset.open = 'true';
         buzz(8);
 
-        // 4. 等待 DOM 高度变化（动画过渡）结束后，平滑滚动到该栏位置
-        // 因为 max-height 动画是 0.55s，我们稍微延迟 50ms 让浏览器重绘
-        setTimeout(() => {
-          window.scrollTo({
-            top: top,
-            behavior: 'smooth'
+        // 平滑滚动到目标位置
+        if (targetScrollY !== null) {
+          // 限制在合理范围内
+          const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+          targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
+
+          // 使用 rAF 确保 DOM 开始重绘后再滚动
+          requestAnimationFrame(() => {
+            window.scrollTo({
+              top: targetScrollY,
+              behavior: 'smooth'
+            });
           });
-        }, 50);
+        }
 
       } else {
-        // 如果点击的是当前已展开的栏（则是关闭）
+        // 关闭当前栏
         col.dataset.open = 'false';
         buzz(8);
       }
@@ -2630,7 +2797,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   长按确认 —— 六边形
+   长按确认
    ============================================================ */
 (function() {
   const btn = $('#holdBtn');
@@ -2691,7 +2858,7 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   04 更多 —— 点击展开多链接
+   04 更多
    ============================================================ */
 (function(){
   const cards = $$('.more-card');
