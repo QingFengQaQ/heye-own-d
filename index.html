@@ -459,7 +459,6 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      /* 上方留出顶部空间，底部由提示自身控制 */
       padding: 100px var(--pad) 0;
       max-width: 820px;
       margin: 0 auto;
@@ -477,7 +476,6 @@
       justify-content: center;
       align-items: center;
       gap: 7vh;
-      /* 底部留出提示的空间，避免被遮挡 */
       padding: 0 0 calc(20px + 60px + var(--safe-b));
     }
 
@@ -559,7 +557,6 @@
       font-weight: 300;
     }
 
-    /* ★ 轻触提示：固定在屏幕最下方往上 20px（含安全区） */
     .passage-tap {
       position: absolute;
       left: 50%;
@@ -1466,10 +1463,13 @@
     .foot em { font-family: var(--en); font-style: italic; color: var(--text-soft); }
 
     /* ============================================================
-       音乐开关
+       音乐开关（入场期间隐藏，结束后始终可见）
     ============================================================ */
     .audio-toggle {
-      position: fixed; left: 16px; bottom: calc(16px + var(--safe-b)); z-index: 9999;
+      position: fixed;
+      left: 16px;
+      bottom: calc(16px + var(--safe-b));
+      z-index: 10000;
       width: 44px; height: 44px;
       border-radius: 50%;
       border: 1px solid var(--line);
@@ -1478,11 +1478,15 @@
       color: var(--text-soft);
       display: grid; place-items: center;
       font-size: 1.1rem;
-      transition: all .3s ease;
+      transition: opacity .4s var(--ease), border-color .3s, color .3s, transform .3s;
       opacity: 0;
+      pointer-events: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .audio-toggle.show { opacity: 1; }
+    .audio-toggle.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
     .audio-toggle:active {
       border-color: var(--accent);
       color: var(--accent);
@@ -1662,7 +1666,7 @@
 <!-- 雪花飘屏背景 -->
 <div class="snow-layer" id="snowLayer"></div>
 
-<!-- 音乐开关 -->
+<!-- 音乐开关（入场期间隐藏，结束后显示） -->
 <button class="audio-toggle muted" type="button" aria-label="音频开关">♪</button>
 
 <!-- 顶部栏 & 菜单 -->
@@ -2261,6 +2265,7 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
 
 /* ============================================================
    逐句文案加载 → 进入主页
+   ★ 入场期间音乐按钮隐藏；入场结束（loader 隐藏、标题显现）时显示
    ============================================================ */
 (function(){
   const loader = document.getElementById('loaderScreen');
@@ -2271,6 +2276,7 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
   const passageLines = $$('.passage-line, .passage-end');
 
   if (hasIntroPlayed()) {
+    // 跳过入场动画：直接显示所有内容，并显示音乐按钮
     loader.classList.add('hidden');
     bootTitle.classList.add('show');
     bootScroll.classList.add('show');
@@ -2293,6 +2299,7 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
     return;
   }
 
+  // 首次访问：播放完整入场动画
   const lines = document.querySelectorAll('.loader-line');
   let delay = 300;
 
@@ -2311,6 +2318,7 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
       bootTitle.classList.add('show');
       bootScroll.classList.add('show');
       header.classList.add('show');
+      // 入场结束，音乐按钮出现
       if (audioBtn) audioBtn.classList.add('show');
       document.body.classList.remove('lock');
     }, 200);
@@ -2488,7 +2496,7 @@ function toast(msg, ms = 2000) {
 
 /* ============================================================
    文案过场 —— 点一下出一行
-   ★ 完成前：页面最多滚动到轻触提示上方，不可继续下滑
+   ★ 完成前：页面最多滚动到 passage 区域底部，不可继续下滑
    ★ 完成后：解除限制，可自由下滑
    ============================================================ */
 (function(){
@@ -2521,19 +2529,10 @@ function toast(msg, ms = 2000) {
     document.body.classList.add('lock');
   }
 
-  /* ---------- 间奏页滚动限制 ----------
-     完成前：最多滚动到 passage 区域底部（轻触提示上方），
-     不能继续下滑进入下一节。
-     完成后：解除限制。
-  */
   function getPassageMaxScrollY() {
-    // passage 区域底部在文档中的位置
     const rect = passage.getBoundingClientRect();
     const passageBottomDoc = rect.bottom + window.scrollY;
-    // 视口高度
     const vh = window.innerHeight;
-    // 允许滚动的最大值：passage 底部刚好在视口底部
-    // 这样轻触提示（固定在视口底部往上 20px）可见，且无法再往下
     return Math.max(0, passageBottomDoc - vh);
   }
 
@@ -2545,7 +2544,6 @@ function toast(msg, ms = 2000) {
     }
   }
 
-  // 滚动监听：仅限制向下越界
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (isFinished) return;
@@ -2557,7 +2555,6 @@ function toast(msg, ms = 2000) {
     });
   }, { passive: true });
 
-  // 触摸滑动：仅拦截「手指上滑、试图继续向下浏览」
   let touchStartY = 0;
   window.addEventListener('touchstart', (e) => {
     if (isFinished) return;
@@ -2567,17 +2564,15 @@ function toast(msg, ms = 2000) {
   window.addEventListener('touchmove', (e) => {
     if (isFinished) return;
     const currentY = e.touches[0].clientY;
-    const deltaY = touchStartY - currentY; // >0 表示手指上滑，页面下滚
+    const deltaY = touchStartY - currentY;
     if (deltaY > 0) {
       const maxY = getPassageMaxScrollY();
       if (window.scrollY >= maxY - 2) {
         e.preventDefault();
       }
     }
-    // 手指下滑（回看上方）不拦截
   }, { passive: false });
 
-  // 滚轮：仅拦截向下越界
   window.addEventListener('wheel', (e) => {
     if (isFinished) return;
     if (e.deltaY > 0) {
@@ -2588,7 +2583,6 @@ function toast(msg, ms = 2000) {
     }
   }, { passive: false });
 
-  // 键盘：仅拦截向下越界
   window.addEventListener('keydown', (e) => {
     if (isFinished) return;
     const downKeys = ['ArrowDown', 'PageDown', 'End', ' '];
@@ -2600,7 +2594,6 @@ function toast(msg, ms = 2000) {
     }
   }, { passive: false });
 
-  // 每次点击推进一行
   function showNext() {
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
@@ -2615,7 +2608,6 @@ function toast(msg, ms = 2000) {
       isFinished = true;
       document.body.classList.remove('lock');
       writeState(STATE_KEYS.passage, lines.length);
-      // 完成后允许继续下滑（解除限制）
     }
   }
 
@@ -2650,7 +2642,6 @@ function toast(msg, ms = 2000) {
     buzz(6);
   });
 
-  // 在未完成时阻止页面被点击区域内部滚动
   passage.addEventListener('touchstart', (e) => {
     if (document.body.classList.contains('lock')) {
       touchStartY = e.touches[0].clientY;
@@ -2676,7 +2667,6 @@ function toast(msg, ms = 2000) {
     }
   }, { passive: false });
 
-  // 提示词显示
   const ioTap = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting && idx < lines.length && !isFinished) {
@@ -2688,7 +2678,6 @@ function toast(msg, ms = 2000) {
   }, { threshold: 0.3 });
   ioTap.observe(passage);
 
-  // 视差
   let ticking2 = false;
   function onScroll(){
     if (ticking2) return;
@@ -2709,7 +2698,6 @@ function toast(msg, ms = 2000) {
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  // 页面重新可见时重新校准
   function recalibratePassage() {
     if (!isFinished) enforcePassageBoundary();
   }
@@ -2939,7 +2927,7 @@ function toast(msg, ms = 2000) {
 
 /* ============================================================
    03 须知
-   更新 不管点击 NOTE 几，都强制回到「[03] 须知」标题上方 10px
+   ★ 不管点击 NOTE 几，都强制回到「[03] 须知」标题上方 10px
    ============================================================ */
 (function(){
   const noticeGrid = document.getElementById('noticeGrid');
@@ -2949,10 +2937,8 @@ function toast(msg, ms = 2000) {
   const cols = $$('.notice-col', noticeGrid);
   if (!cols.length) return;
 
-  // 标题顶部距浏览器顶部 10px
   const HEAD_TOP_OFFSET = 10;
 
-  // 恢复须知折叠状态
   const savedNotice = parseInt(readState(STATE_KEYS.notice, '0'), 10);
   if (!isNaN(savedNotice)) {
     cols.forEach((c, i) => {
@@ -2960,16 +2946,13 @@ function toast(msg, ms = 2000) {
     });
   }
 
-  // 计算「[03] 须知」标题顶部的文档绝对位置
   function getNoticeHeadTop() {
     const rect = noticeHead.getBoundingClientRect();
     return rect.top + window.scrollY;
   }
 
-  // 强制滚动到标题上方 10px（立即执行，无平滑）
   function snapToNoticeHead() {
     const targetY = Math.max(0, getNoticeHeadTop() - HEAD_TOP_OFFSET);
-    // 临时关闭 CSS 平滑，避免与后续动画冲突
     const html = document.documentElement;
     const prev = html.style.scrollBehavior;
     html.style.scrollBehavior = 'auto';
@@ -2977,7 +2960,6 @@ function toast(msg, ms = 2000) {
     html.style.scrollBehavior = prev;
   }
 
-  // 平滑滚动到标题上方 10px
   function smoothToNoticeHead() {
     const targetY = Math.max(0, getNoticeHeadTop() - HEAD_TOP_OFFSET);
     window.scrollTo({ top: targetY, behavior: 'smooth' });
@@ -2991,8 +2973,10 @@ function toast(msg, ms = 2000) {
       const index = parseInt(col.dataset.colIndex, 10);
       const isOpen = col.dataset.open === 'true';
 
+      // 1. 先全部收起，让布局稳定
       cols.forEach(c => { c.dataset.open = 'false'; });
 
+      // 2. 立即吸附到标题上方 10px
       snapToNoticeHead();
 
       if (!isOpen) {
@@ -3001,6 +2985,7 @@ function toast(msg, ms = 2000) {
         writeState(STATE_KEYS.notice, index);
         buzz(8);
 
+        // 4. 展开后再无感对齐一次
         requestAnimationFrame(() => {
           requestAnimationFrame(() => {
             const targetY = Math.max(0, getNoticeHeadTop() - HEAD_TOP_OFFSET);
@@ -3231,14 +3216,27 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   音频模块
+   音频模块（直接初始化，确保能播）
    ============================================================ */
 (function() {
-  const MAX = 1;
-  const EXT = '.mp3';
-  const KEY = 'snow-audio-v1';
+  const AUDIO_KEY = 'snow-audio-state-v1';
+  const AUDIO_SRC = 'https://cdn.jsdelivr.net/gh/qingfengqaq/heye-own-d@main/1.mp3';
+
   let audio = null;
   let unlockAttached = false;
+  let userPaused = false;
+
+  function readAudioState() {
+    try {
+      const raw = localStorage.getItem(AUDIO_KEY);
+      if (!raw) return { enabled: true };
+      const obj = JSON.parse(raw);
+      return { enabled: obj.enabled !== false };
+    } catch (e) { return { enabled: true }; }
+  }
+  function writeAudioState(enabled) {
+    try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ enabled })); } catch (e) {}
+  }
 
   function getAudio() {
     if (!audio) {
@@ -3246,19 +3244,17 @@ function toast(msg, ms = 2000) {
       audio.preload = 'auto';
       audio.loop = true;
       audio.volume = 0.3;
+      audio.src = AUDIO_SRC;
+      audio.addEventListener('error', () => {
+        console.warn('[audio] 加载失败:', audio.src);
+      });
+      audio.addEventListener('canplay', () => {
+        console.log('[audio] 可播放');
+      });
     }
     return audio;
   }
-  function enabled() {
-    try {
-      const v = sessionStorage.getItem(KEY);
-      if (!v) return true;
-      return JSON.parse(v).enabled !== false;
-    } catch (e) { return true; }
-  }
-  function setEnabled(v) {
-    try { sessionStorage.setItem(KEY, JSON.stringify({ enabled: v })); } catch (e) {}
-  }
+
   function updateBtn(playing) {
     const b = document.querySelector('.audio-toggle');
     if (!b) return;
@@ -3267,22 +3263,24 @@ function toast(msg, ms = 2000) {
     b.textContent = playing ? '♫' : '♪';
   }
 
-  function play() {
+  function tryPlay() {
+    if (userPaused) return;
     const a = getAudio();
-    if (!a.src) return;
     const p = a.play();
     if (p && p.then) {
       p.then(() => {
+        console.log('[audio] 播放成功');
         updateBtn(true);
-        setEnabled(true);
+        writeAudioState(true);
         removeUnlockListeners();
-      }).catch(() => {
+      }).catch((err) => {
+        console.warn('[audio] 播放被拦截:', err.name);
         updateBtn(false);
-        if (enabled()) attachUnlock();
+        attachUnlock();
       });
     } else {
       updateBtn(true);
-      setEnabled(true);
+      writeAudioState(true);
       removeUnlockListeners();
     }
   }
@@ -3294,69 +3292,78 @@ function toast(msg, ms = 2000) {
   }
 
   function unlockHandler() {
-    if (!enabled()) return;
-    const a = getAudio();
-    if (a.paused) play();
-    removeUnlockListeners();
+    if (userPaused) return;
+    console.log('[audio] 用户交互，尝试播放');
+    tryPlay();
   }
 
   function attachUnlock() {
     if (unlockAttached) return;
     unlockAttached = true;
-    document.addEventListener('click', unlockHandler, { once: true });
-    document.addEventListener('touchstart', unlockHandler, { once: true });
-    document.addEventListener('touchmove', unlockHandler, { once: true, passive: true });
-    document.addEventListener('scroll', unlockHandler, { once: true, passive: true });
-    document.addEventListener('pointerdown', unlockHandler, { once: true });
+    // 多事件兜底，任一触发即可解锁
+    document.addEventListener('pointerdown', unlockHandler, { once: true, capture: true });
+    document.addEventListener('touchend', unlockHandler, { once: true, capture: true, passive: true });
+    document.addEventListener('click', unlockHandler, { once: true, capture: true });
+    document.addEventListener('keydown', unlockHandler, { once: true, capture: true });
   }
 
   function removeUnlockListeners() {
-    document.removeEventListener('click', unlockHandler);
-    document.removeEventListener('touchstart', unlockHandler);
-    document.removeEventListener('touchmove', unlockHandler);
-    document.removeEventListener('scroll', unlockHandler);
-    document.removeEventListener('pointerdown', unlockHandler);
+    document.removeEventListener('pointerdown', unlockHandler, true);
+    document.removeEventListener('touchend', unlockHandler, true);
+    document.removeEventListener('click', unlockHandler, true);
+    document.removeEventListener('keydown', unlockHandler, true);
     unlockAttached = false;
   }
 
   function init() {
-    const a = getAudio();
-    a.loop = true;
-    a.volume = 0.3;
-    const list = [];
-    const cdnPrefix = 'https://cdn.jsdelivr.net/gh/qingfengqaq/heye-own-d@main/';
-    for (let i = 1; i <= MAX; i++) list.push(cdnPrefix + String(i) + EXT);
-    const src = list[Math.floor(Math.random() * list.length)];
-    a.src = src;
-    a.load();
+    const state = readAudioState();
+    userPaused = !state.enabled;
 
+    getAudio();
     updateBtn(false);
 
-    if (enabled()) {
-      play();
-    } else {
-      updateBtn(false);
-    }
+    // 尝试自动播放 + 挂解锁
+    tryPlay();
+    if (!userPaused) attachUnlock();
 
+    // 页面重新可见时再试
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && !userPaused) {
+        const a = getAudio();
+        if (a.paused) tryPlay();
+      }
+    });
+    window.addEventListener('pageshow', () => {
+      if (!userPaused) {
+        const a = getAudio();
+        if (a.paused) tryPlay();
+      }
+    });
+
+    // 按钮
     const btn = document.querySelector('.audio-toggle');
     if (btn) {
-      btn.onclick = (e) => {
+      btn.addEventListener('click', (e) => {
         e.stopPropagation();
+        const a = getAudio();
         if (a.paused) {
-          setEnabled(true);
-          play();
+          userPaused = false;
+          writeAudioState(true);
+          tryPlay();
         } else {
+          userPaused = true;
           pause();
-          setEnabled(false);
+          writeAudioState(false);
         }
-      };
+      });
     }
   }
 
+  // 立即初始化，不等 loader
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 100));
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    setTimeout(init, 100);
+    init();
   }
 })();
 </script>
