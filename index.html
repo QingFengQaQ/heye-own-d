@@ -12,7 +12,9 @@
        ^_^ 如果你抄了，那屎山代码的署名也不能改，因为是我的进步史 ^_^
     ============================================================ */
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap');
-
+    /* ============================================================
+       SNOWFALL主题
+    ============================================================ */
     :root {
       --white: #ffffff;
       --snow: #f4faff;
@@ -3216,27 +3218,17 @@ function toast(msg, ms = 2000) {
 })();
 
 /* ============================================================
-   音频模块（直接初始化，确保能播）
+   音频模块（参照文件 2 的逻辑）
+   ★ 先静音自动播放 → 失败再非静音 → 仍失败挂多事件解锁
    ============================================================ */
 (function() {
   const AUDIO_KEY = 'snow-audio-state-v1';
   const AUDIO_SRC = 'https://cdn.jsdelivr.net/gh/qingfengqaq/heye-own-d@main/1.mp3';
 
   let audio = null;
-  let unlockAttached = false;
-  let userPaused = false;
-
-  function readAudioState() {
-    try {
-      const raw = localStorage.getItem(AUDIO_KEY);
-      if (!raw) return { enabled: true };
-      const obj = JSON.parse(raw);
-      return { enabled: obj.enabled !== false };
-    } catch (e) { return { enabled: true }; }
-  }
-  function writeAudioState(enabled) {
-    try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ enabled })); } catch (e) {}
-  }
+  let unlockBound = false;
+  let done = false;
+  let mutedAutoplayTried = false;
 
   function getAudio() {
     if (!audio) {
@@ -3255,6 +3247,17 @@ function toast(msg, ms = 2000) {
     return audio;
   }
 
+  function enabled() {
+    try {
+      const raw = localStorage.getItem(AUDIO_KEY);
+      if (!raw) return true;
+      return JSON.parse(raw).enabled !== false;
+    } catch (e) { return true; }
+  }
+  function setEnabled(v) {
+    try { localStorage.setItem(AUDIO_KEY, JSON.stringify({ enabled: v })); } catch (e) {}
+  }
+
   function updateBtn(playing) {
     const b = document.querySelector('.audio-toggle');
     if (!b) return;
@@ -3263,26 +3266,61 @@ function toast(msg, ms = 2000) {
     b.textContent = playing ? '♫' : '♪';
   }
 
-  function tryPlay() {
-    if (userPaused) return;
+  function waitCanPlay(a, ms) {
+    return new Promise((resolve, reject) => {
+      if (a.readyState >= 3) return resolve();
+      const t = setTimeout(() => { cleanup(); reject(new Error('timeout')); }, ms);
+      function onReady() { cleanup(); resolve(); }
+      function onErr() { cleanup(); reject(new Error('load error')); }
+      function cleanup() {
+        clearTimeout(t);
+        a.removeEventListener('canplay', onReady);
+        a.removeEventListener('error', onErr);
+      }
+      a.addEventListener('canplay', onReady, { once: true });
+      a.addEventListener('error', onErr, { once: true });
+    });
+  }
+
+  function onSuccess() {
+    done = true;
+    console.log('[audio] 播放成功');
+    updateBtn(true);
+    setEnabled(true);
+    unbindUnlock();
+  }
+
+  function tryPlayUnmuted() {
     const a = getAudio();
+    if (!a.src) return Promise.reject(new Error('no src'));
+    if (!a.paused && !a.muted) { onSuccess(); return Promise.resolve(); }
+
+    a.muted = false;
     const p = a.play();
-    if (p && p.then) {
-      p.then(() => {
-        console.log('[audio] 播放成功');
-        updateBtn(true);
-        writeAudioState(true);
-        removeUnlockListeners();
-      }).catch((err) => {
-        console.warn('[audio] 播放被拦截:', err.name);
-        updateBtn(false);
-        attachUnlock();
-      });
-    } else {
-      updateBtn(true);
-      writeAudioState(true);
-      removeUnlockListeners();
-    }
+    const handle = (p && p.then) ? p : Promise.resolve();
+    return handle.then(onSuccess).catch(err => {
+      console.warn('[audio] 非静音播放被拦截:', err.name);
+      updateBtn(false);
+      throw err;
+    });
+  }
+
+  function tryMutedAutoplay() {
+    if (mutedAutoplayTried) return Promise.reject(new Error('already tried'));
+    mutedAutoplayTried = true;
+    const a = getAudio();
+    if (!a.src) return Promise.reject(new Error('no src'));
+
+    a.muted = true;
+    const p = a.play();
+    const handle = (p && p.then) ? p : Promise.resolve();
+    return handle.then(() => {
+      a.muted = false;  // 静音解锁后立即恢复音量
+      onSuccess();
+    }).catch(err => {
+      a.muted = false;
+      throw err;
+    });
   }
 
   function pause() {
@@ -3292,51 +3330,62 @@ function toast(msg, ms = 2000) {
   }
 
   function unlockHandler() {
-    if (userPaused) return;
+    if (done) { unbindUnlock(); return; }
+    if (!enabled()) { unbindUnlock(); return; }
     console.log('[audio] 用户交互，尝试播放');
-    tryPlay();
+    tryPlayUnmuted().catch(() => {});
   }
 
-  function attachUnlock() {
-    if (unlockAttached) return;
-    unlockAttached = true;
-    // 多事件兜底，任一触发即可解锁
-    document.addEventListener('pointerdown', unlockHandler, { once: true, capture: true });
-    document.addEventListener('touchend', unlockHandler, { once: true, capture: true, passive: true });
-    document.addEventListener('click', unlockHandler, { once: true, capture: true });
-    document.addEventListener('keydown', unlockHandler, { once: true, capture: true });
+  function bindUnlock() {
+    if (unlockBound || done) return;
+    unlockBound = true;
+    const opts = { passive: true, capture: true };
+    document.addEventListener('pointerdown', unlockHandler, opts);
+    document.addEventListener('touchstart', unlockHandler, opts);
+    document.addEventListener('mousedown', unlockHandler, opts);
+    document.addEventListener('click', unlockHandler, opts);
+    document.addEventListener('keydown', unlockHandler, opts);
+    document.addEventListener('scroll', unlockHandler, opts);
+    document.addEventListener('wheel', unlockHandler, opts);
   }
-
-  function removeUnlockListeners() {
+  function unbindUnlock() {
+    if (!unlockBound) return;
+    unlockBound = false;
     document.removeEventListener('pointerdown', unlockHandler, true);
-    document.removeEventListener('touchend', unlockHandler, true);
+    document.removeEventListener('touchstart', unlockHandler, true);
+    document.removeEventListener('mousedown', unlockHandler, true);
     document.removeEventListener('click', unlockHandler, true);
     document.removeEventListener('keydown', unlockHandler, true);
-    unlockAttached = false;
+    document.removeEventListener('scroll', unlockHandler, true);
+    document.removeEventListener('wheel', unlockHandler, true);
   }
 
   function init() {
-    const state = readAudioState();
-    userPaused = !state.enabled;
-
     getAudio();
     updateBtn(false);
 
-    // 尝试自动播放 + 挂解锁
-    tryPlay();
-    if (!userPaused) attachUnlock();
+    if (enabled()) {
+      // 1) 先试静音自动播放（多数浏览器允许）
+      tryMutedAutoplay().catch(() => {
+        // 2) 静音也不行 → 试非静音
+        tryPlayUnmuted().catch(() => {
+          // 3) 都不行 → 挂多事件解锁
+          bindUnlock();
+        });
+      });
+    }
 
-    // 页面重新可见时再试
+    // 页面重新可见 / 返回时再试
     document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible' && !userPaused) {
+      if (document.visibilityState === 'visible' && enabled() && !done) {
         const a = getAudio();
-        if (a.paused) tryPlay();
+        if (a.paused) tryPlayUnmuted().catch(() => {});
       }
     });
     window.addEventListener('pageshow', () => {
-      if (!userPaused) {
+      if (enabled() && !done) {
         const a = getAudio();
-        if (a.paused) tryPlay();
+        if (a.paused) tryPlayUnmuted().catch(() => {});
       }
     });
 
@@ -3347,23 +3396,22 @@ function toast(msg, ms = 2000) {
         e.stopPropagation();
         const a = getAudio();
         if (a.paused) {
-          userPaused = false;
-          writeAudioState(true);
-          tryPlay();
+          setEnabled(true);
+          tryPlayUnmuted().catch(() => {
+            setTimeout(() => tryPlayUnmuted().catch(() => {}), 300);
+          });
         } else {
-          userPaused = true;
           pause();
-          writeAudioState(false);
+          setEnabled(false);
         }
       });
     }
   }
 
-  // 立即初始化，不等 loader
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', () => setTimeout(init, 100));
   } else {
-    init();
+    setTimeout(init, 100);
   }
 })();
 </script>
