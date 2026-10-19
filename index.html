@@ -11,9 +11,6 @@
        ^_^ 不会真的有人连屎山都要抄吧? ^_^
        ^_^ 如果你抄了，那屎山代码的署名也不能改，因为是我的进步史 ^_^
     ============================================================ */
-    /* ============================================================
-       字体与变量
-    ============================================================ */
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&family=Noto+Serif+SC:wght@300;400;600&display=swap');
 
     :root {
@@ -1777,16 +1774,16 @@
       </div>
 
       <div class="mbti-row" id="aboutMbti">
-        <button data-name="内向 · Introversion" data-detail="独处时恢复能量，倾向于先思考再表达。">
+        <button data-index="0" data-name="内向 · Introversion" data-detail="独处时恢复能量，倾向于先思考再表达。">
           <span class="m-letter">I</span>
         </button>
-        <button data-name="直觉 · iNtuition" data-detail="关注整体与趋势，喜欢从抽象概念中寻找意义。">
+        <button data-index="1" data-name="直觉 · iNtuition" data-detail="关注整体与趋势，喜欢从抽象概念中寻找意义。">
           <span class="m-letter">N</span>
         </button>
-        <button data-name="情感 · Feeling" data-detail="以价值观和情感为决策依据，重视人际关系。">
+        <button data-index="2" data-name="情感 · Feeling" data-detail="以价值观和情感为决策依据，重视人际关系。">
           <span class="m-letter">F</span>
         </button>
-        <button data-name="知觉 · Perception" data-detail="喜欢保留弹性，随情境调整，不喜欢被过度约束。">
+        <button data-index="3" data-name="知觉 · Perception" data-detail="喜欢保留弹性，随情境调整，不喜欢被过度约束。">
           <span class="m-letter">P</span>
         </button>
       </div>
@@ -1863,7 +1860,7 @@
 
   <div class="notice-grid" id="noticeGrid">
 
-    <div class="notice-col" data-open="true">
+    <div class="notice-col" data-col-index="0" data-open="true">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 001</span>
         <span class="col-name">个人</span>
@@ -1898,7 +1895,7 @@
       </div>
     </div>
 
-    <div class="notice-col" data-open="false">
+    <div class="notice-col" data-col-index="1" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 002</span>
         <span class="col-name">排版</span>
@@ -1919,7 +1916,7 @@
       </div>
     </div>
 
-    <div class="notice-col" data-open="false">
+    <div class="notice-col" data-col-index="2" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 003</span>
         <span class="col-name">下单</span>
@@ -1937,7 +1934,7 @@
       </div>
     </div>
 
-    <div class="notice-col" data-open="false">
+    <div class="notice-col" data-col-index="3" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 004</span>
         <span class="col-name">价格</span>
@@ -1955,7 +1952,7 @@
       </div>
     </div>
 
-    <div class="notice-col" data-open="false">
+    <div class="notice-col" data-col-index="4" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 005</span>
         <span class="col-name">加急</span>
@@ -1973,7 +1970,7 @@
       </div>
     </div>
 
-    <div class="notice-col" data-open="false">
+    <div class="notice-col" data-col-index="5" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 006</span>
         <span class="col-name">注意</span>
@@ -1991,7 +1988,7 @@
       </div>
     </div>
 
-    <div class="notice-col" data-open="false">
+    <div class="notice-col" data-col-index="6" data-open="false">
       <button class="col-head" type="button">
         <span class="note-tag">NOTE 007</span>
         <span class="col-name">教学</span>
@@ -2041,7 +2038,7 @@
 
   <div class="more-stage" data-reveal>
 
-    <div class="more-card" data-open="false">
+    <div class="more-card" data-more-index="0" data-open="false">
       <button class="more-head hover-float" type="button">
         <span class="more-idx">01</span>
         <span class="more-title">历史</span>
@@ -2069,7 +2066,7 @@
       </div>
     </div>
 
-    <div class="more-card" data-open="false">
+    <div class="more-card" data-more-index="1" data-open="false">
       <button class="more-head hover-float" type="button">
         <span class="more-idx">02</span>
         <span class="more-title">模板</span>
@@ -2093,7 +2090,7 @@
       </div>
     </div>
 
-    <div class="more-card" data-open="false">
+    <div class="more-card" data-more-index="2" data-open="false">
       <button class="more-head hover-float" type="button">
         <span class="more-idx">03</span>
         <span class="more-title">颜色</span>
@@ -2149,7 +2146,7 @@
       </div>
     </div>
 
-    <div class="more-card jump-card" data-open="false">
+    <div class="more-card jump-card" data-more-index="3" data-open="false">
       <a href="https://www.kdocs.cn/l/chwpxQ5EsNOG" target="_blank" rel="noopener" class="more-head hover-float">
         <span class="more-idx">04</span>
         <span class="more-title">总体</span>
@@ -2173,20 +2170,74 @@
 
 <script>
 /* ============================================================
-   过场动画会话记忆
+   【会话与持久化核心】
+   - 使用 sessionStorage 标记当前会话（snow-session-alive）
+   - 大退网站重进（关闭浏览器/标签页后重新进入）时 sessionStorage 消失
+     → 检测到标记不存在 → 清除所有 localStorage 状态 → 完全重置
+   - 同一会话内刷新/外部链接返回 → 标记存在 → 保留所有 localStorage 状态
    ============================================================ */
-const INTRO_KEY = 'snow-intro-played';
+const SESSION_KEY = 'snow-session-alive';
 
-function hasIntroPlayed() {
+const STATE_KEYS = {
+  intro: 'snow-intro-played',
+  passage: 'snow-passage-idx',
+  mbti: 'snow-mbti-idx',
+  style: 'snow-style-idx',
+  notice: 'snow-notice-open',
+  confirmed: 'snow-confirmed',
+  more: 'snow-more-open'
+};
+
+/* 会话检测与重置 */
+(function initSession(){
+  let isNewSession = false;
   try {
-    return sessionStorage.getItem(INTRO_KEY) === '1';
-  } catch (e) { return false; }
+    isNewSession = sessionStorage.getItem(SESSION_KEY) !== '1';
+    // 标记当前会话存活
+    sessionStorage.setItem(SESSION_KEY, '1');
+  } catch (e) {
+    // sessionStorage 不可用时（隐私模式等），视为新会话，但避免误清
+    isNewSession = false;
+  }
+
+  if (isNewSession) {
+    // 大退重进：清空所有持久化状态
+    try {
+      Object.values(STATE_KEYS).forEach(k => localStorage.removeItem(k));
+      // 清理旧的 sessionStorage 入场标记
+      sessionStorage.removeItem('snow-intro-played');
+    } catch (e) {}
+  }
+
+  // 在同一会话内持续保持标记存活（多标签页共享）
+  // 监听页面可见性变化，确保从后台切回时标记仍存在
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      try { sessionStorage.setItem(SESSION_KEY, '1'); } catch (e) {}
+    }
+  });
+})();
+
+function readState(key, fallback) {
+  try {
+    const v = localStorage.getItem(key);
+    return v === null ? fallback : v;
+  } catch (e) { return fallback; }
 }
 
+function writeState(key, value) {
+  try { localStorage.setItem(key, String(value)); } catch (e) {}
+}
+
+function removeState(key) {
+  try { localStorage.removeItem(key); } catch (e) {}
+}
+
+function hasIntroPlayed() {
+  return readState(STATE_KEYS.intro, '0') === '1';
+}
 function markIntroPlayed() {
-  try {
-    sessionStorage.setItem(INTRO_KEY, '1');
-  } catch (e) {}
+  writeState(STATE_KEYS.intro, '1');
 }
 
 /* ============================================================
@@ -2229,9 +2280,9 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
   const bootScroll = document.getElementById('bootScroll');
   const audioBtn = document.querySelector('.audio-toggle');
   const passageLines = $$('.passage-line, .passage-end');
-  const lastPassage = passageLines[passageLines.length - 1];
 
   if (hasIntroPlayed()) {
+    // 跳过入场动画，直接展示主页
     loader.classList.add('hidden');
     bootTitle.classList.add('show');
     bootScroll.classList.add('show');
@@ -2239,15 +2290,23 @@ const buzz = (p = 10) => { if (navigator.vibrate) navigator.vibrate(p); };
     if (audioBtn) audioBtn.classList.add('show');
     document.body.classList.remove('lock');
 
-    if (lastPassage && lastPassage.classList.contains('in')) {
-      passageLines.forEach(l => l.classList.add('in'));
+    // 恢复间奏页进度
+    const savedIdx = parseInt(readState(STATE_KEYS.passage, '0'), 10) || 0;
+    if (savedIdx > 0) {
+      passageLines.forEach((l, i) => {
+        if (i < savedIdx) l.classList.add('in');
+      });
+    }
+    const lastLine = passageLines[passageLines.length - 1];
+    if (lastLine && lastLine.classList.contains('in')) {
       document.body.classList.remove('lock');
-    } else {
+    } else if (passageLines.length) {
       document.body.classList.add('lock');
     }
     return;
   }
 
+  // 首次访问（或大退重置后）：播放完整入场动画
   const lines = document.querySelectorAll('.loader-line');
   let delay = 300;
 
@@ -2371,12 +2430,10 @@ function toast(msg, ms = 2000) {
   const passage = document.getElementById('passage');
   if (!bootScroll || !passage) return;
 
-  if (hasIntroPlayed()) {
-    const passageLines = $$('.passage-line, .passage-end');
-    if (passageLines.length) {
-      const lastLine = passageLines[passageLines.length - 1];
-      if (lastLine.classList.contains('in')) return;
-    }
+  const passageLines = $$('.passage-line, .passage-end');
+  if (passageLines.length) {
+    const lastLine = passageLines[passageLines.length - 1];
+    if (lastLine.classList.contains('in')) return;
   }
 
   function getBootScrollBottom() {
@@ -2398,12 +2455,8 @@ function toast(msg, ms = 2000) {
     if (scrollY + vh * THRESHOLD_RATIO > bootBottom) {
       autoEntered = true;
       const passageTop = passage.getBoundingClientRect().top + scrollY;
-      window.scrollTo({
-        top: passageTop,
-        behavior: 'smooth'
-      });
+      window.scrollTo({ top: passageTop, behavior: 'smooth' });
       setTimeout(() => {
-        const passageLines = $$('.passage-line, .passage-end');
         const lastLine = passageLines[passageLines.length - 1];
         if (lastLine && !lastLine.classList.contains('in')) {
           document.body.classList.add('lock');
@@ -2414,9 +2467,7 @@ function toast(msg, ms = 2000) {
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        checkScroll();
-      }
+      if (entry.isIntersecting) checkScroll();
     });
   }, {
     rootMargin: `0px 0px -${Math.round(THRESHOLD_RATIO * 100)}% 0px`,
@@ -2424,9 +2475,7 @@ function toast(msg, ms = 2000) {
   });
 
   const bootStage = document.querySelector('.boot-stage');
-  if (bootStage) {
-    observer.observe(bootStage);
-  }
+  if (bootStage) observer.observe(bootStage);
 
   let ticking = false;
   window.addEventListener('scroll', () => {
@@ -2449,9 +2498,7 @@ function toast(msg, ms = 2000) {
     if (autoEntered) return;
     const currentY = e.touches[0].clientY;
     const deltaY = touchStartY - currentY;
-    if (deltaY > 30) {
-      checkScroll();
-    }
+    if (deltaY > 30) checkScroll();
   }, { passive: true });
 })();
 
@@ -2468,18 +2515,24 @@ function toast(msg, ms = 2000) {
   let isFinished = false;
   let isTouching = false;
 
+  const savedIdx = parseInt(readState(STATE_KEYS.passage, '0'), 10) || 0;
+  if (savedIdx > 0) {
+    lines.forEach((l, i) => {
+      if (i < savedIdx) l.classList.add('in');
+    });
+    idx = Math.min(savedIdx, lines.length);
+  }
+
   const lastLine = lines[lines.length - 1];
-  if (lastLine.classList.contains('in')) {
+  if (idx >= lines.length || lastLine.classList.contains('in')) {
     isFinished = true;
-    document.body.classList.remove('lock');
-    tapHint.classList.remove('show');
     lines.forEach(l => l.classList.add('in'));
     idx = lines.length;
+    document.body.classList.remove('lock');
+    tapHint.classList.remove('show');
+    writeState(STATE_KEYS.passage, lines.length);
   } else {
     document.body.classList.add('lock');
-    lines.forEach((l, i) => {
-      if (l.classList.contains('in')) idx = i + 1;
-    });
   }
 
   function showNext() {
@@ -2489,11 +2542,13 @@ function toast(msg, ms = 2000) {
     }
     lines[idx].classList.add('in');
     idx++;
+    writeState(STATE_KEYS.passage, idx);
     
     if (idx >= lines.length) {
       tapHint.classList.remove('show');
       isFinished = true;
       document.body.classList.remove('lock'); 
+      writeState(STATE_KEYS.passage, lines.length);
     }
   }
 
@@ -2511,12 +2566,10 @@ function toast(msg, ms = 2000) {
   passage.addEventListener('touchend', (e) => {
     if (isFinished || !isTouching) return;
     isTouching = false;
-    
     const touch = e.changedTouches[0];
     const deltaX = Math.abs(touch.clientX - touchStartPos.x);
     const deltaY = Math.abs(touch.clientY - touchStartPos.y);
     const duration = Date.now() - touchStartTime;
-    
     if (deltaX < 10 && deltaY < 10 && duration < 300) {
       showNext();
       buzz(6);
@@ -2531,7 +2584,6 @@ function toast(msg, ms = 2000) {
   });
 
   let touchStartY = 0;
-  
   passage.addEventListener('touchstart', (e) => {
     if (document.body.classList.contains('lock')) {
       touchStartY = e.touches[0].clientY;
@@ -2542,19 +2594,12 @@ function toast(msg, ms = 2000) {
     if (!document.body.classList.contains('lock')) return;
     const y = e.touches[0].clientY;
     const deltaY = y - touchStartY;
-    
-    if (deltaY > 20) {
-      e.preventDefault();
-    }
-    if (deltaY < -20) {
-      e.preventDefault();
-    }
+    if (deltaY > 20) e.preventDefault();
+    if (deltaY < -20) e.preventDefault();
   }, { passive: false });
 
   passage.addEventListener('wheel', (e) => {
-    if (document.body.classList.contains('lock')) {
-      e.preventDefault();
-    }
+    if (document.body.classList.contains('lock')) e.preventDefault();
   }, { passive: false });
 
   window.addEventListener('keydown', (e) => {
@@ -2609,10 +2654,7 @@ function toast(msg, ms = 2000) {
           io.unobserve(entry.target);
         }
       });
-    }, {
-      threshold: 0.4,
-      rootMargin: '0px 0px -10% 0px'
-    });
+    }, { threshold: 0.4, rootMargin: '0px 0px -10% 0px' });
 
     words.forEach((p, i) => {
       p.style.transitionDelay = (i * 0.15) + 's';
@@ -2625,27 +2667,42 @@ function toast(msg, ms = 2000) {
   const detail = $('#aboutMbtiDetail');
   const titleEl = $('#detailTitle');
   const textEl = $('#detailText');
-  
   if (!row || !detail) return;
 
-  row.querySelectorAll('button').forEach(btn => {
+  const buttons = row.querySelectorAll('button');
+
+  // 恢复 MBTI
+  const savedMbti = parseInt(readState(STATE_KEYS.mbti, '-1'), 10);
+  if (savedMbti >= 0 && savedMbti < buttons.length) {
+    const btn = buttons[savedMbti];
+    const name = btn.dataset.name || '';
+    const detailText = btn.dataset.detail || '';
+    btn.classList.add('on');
+    if (titleEl) titleEl.textContent = name;
+    if (textEl) textEl.textContent = detailText;
+    detail.classList.add('open');
+    hint.classList.add('hidden');
+  }
+
+  buttons.forEach(btn => {
     btn.addEventListener('click', () => {
+      const index = parseInt(btn.dataset.index, 10);
       const name = btn.dataset.name || '';
       const detailText = btn.dataset.detail || '';
       const isSame = btn.classList.contains('on');
 
-      row.querySelectorAll('button').forEach(b => b.classList.remove('on'));
+      buttons.forEach(b => b.classList.remove('on'));
 
       if (isSame) {
         detail.classList.remove('open');
         hint.classList.remove('hidden');
+        writeState(STATE_KEYS.mbti, -1);
         buzz(4);
         return;
       }
 
       btn.classList.add('on');
-
-      if (titleEl) titleEl.textContent = name; 
+      if (titleEl) titleEl.textContent = name;
 
       if (textEl) {
         textEl.textContent = '';
@@ -2659,6 +2716,7 @@ function toast(msg, ms = 2000) {
 
       detail.classList.add('open');
       hint.classList.add('hidden');
+      writeState(STATE_KEYS.mbti, index);
       buzz(6);
     });
   });
@@ -2694,12 +2752,13 @@ function toast(msg, ms = 2000) {
   STYLES.forEach((s, i) => {
     const b = document.createElement('button');
     b.textContent = s.name;
+    b.dataset.styleIndex = i;
     b.classList.add('hover-float');
     b.addEventListener('click', () => { pick(i); stopAuto(); });
     listEl.appendChild(b);
   });
 
-  async function pick(i){
+  async function pick(i, instant = false){
     if (busy || i === cur) return;
     busy = true;
     cur = i;
@@ -2707,7 +2766,7 @@ function toast(msg, ms = 2000) {
     [...listEl.children].forEach((b, k) => b.classList.toggle('on', k === i));
 
     const activeBtn = listEl.children[i];
-    if (activeBtn) {
+    if (activeBtn && !instant) {
       const isHorizontal = window.matchMedia('(max-width: 900px)').matches;
       activeBtn.scrollIntoView({
         behavior: 'smooth',
@@ -2721,6 +2780,20 @@ function toast(msg, ms = 2000) {
 
     descEl.textContent = '';
     tagsEl.innerHTML = '';
+
+    writeState(STATE_KEYS.style, i);
+
+    if (instant) {
+      nameEl.textContent = STYLES[i].name;
+      descEl.textContent = STYLES[i].desc;
+      STYLES[i].tags.forEach(tag => {
+        const s = document.createElement('span');
+        s.textContent = tag;
+        tagsEl.appendChild(s);
+      });
+      busy = false;
+      return;
+    }
 
     await scramble(nameEl, STYLES[i].name, 520);
 
@@ -2770,12 +2843,17 @@ function toast(msg, ms = 2000) {
     else startAuto();
   });
 
-  new IntersectionObserver(([e], o) => {
-    if (e.isIntersecting) {
-      o.disconnect();
-      pick(Math.random() * STYLES.length | 0);
-    }
-  }, { threshold: 0.3 }).observe(stage);
+  const savedStyle = parseInt(readState(STATE_KEYS.style, '-1'), 10);
+  if (savedStyle >= 0 && savedStyle < STYLES.length) {
+    pick(savedStyle, true);
+  } else {
+    new IntersectionObserver(([e], o) => {
+      if (e.isIntersecting) {
+        o.disconnect();
+        pick(Math.random() * STYLES.length | 0);
+      }
+    }, { threshold: 0.3 }).observe(stage);
+  }
 
   document.addEventListener('click', e => {
     if (!e.target.closest('.style-stage')) stopAuto();
@@ -2794,11 +2872,19 @@ function toast(msg, ms = 2000) {
 
   const OFFSET_PX = 20;
 
+  const savedNotice = parseInt(readState(STATE_KEYS.notice, '0'), 10);
+  if (!isNaN(savedNotice)) {
+    cols.forEach((c, i) => {
+      c.dataset.open = (i === savedNotice) ? 'true' : 'false';
+    });
+  }
+
   cols.forEach(col => {
     const head = col.querySelector('.col-head');
     if (!head) return;
 
     head.addEventListener('click', () => {
+      const index = parseInt(col.dataset.colIndex, 10);
       const isOpen = col.dataset.open === 'true';
 
       if (!isOpen) {
@@ -2816,22 +2902,20 @@ function toast(msg, ms = 2000) {
         });
 
         col.dataset.open = 'true';
+        writeState(STATE_KEYS.notice, index);
         buzz(8);
 
         if (targetScrollY !== null) {
           const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
           targetScrollY = Math.max(0, Math.min(targetScrollY, maxScroll));
-
           requestAnimationFrame(() => {
-            window.scrollTo({
-              top: targetScrollY,
-              behavior: 'smooth'
-            });
+            window.scrollTo({ top: targetScrollY, behavior: 'smooth' });
           });
         }
 
       } else {
         col.dataset.open = 'false';
+        writeState(STATE_KEYS.notice, -1);
         buzz(8);
       }
     });
@@ -2849,12 +2933,17 @@ function toast(msg, ms = 2000) {
   if (!btn || !circle) return;
   const L = 452;
   let hp = 0, holding = false, raf;
+
+  const isConfirmed = () => readState(STATE_KEYS.confirmed, '0') === '1';
+
   const done = () => {
     btn.classList.add('ok');
     panel.classList.add('ok-wrap');
     circle.style.strokeDashoffset = 0;
   };
-  if (localStorage.getItem('snow-confirmed')) done();
+
+  if (isConfirmed()) done();
+
   function step() {
     hp = clamp(hp + (holding ? .02 : -.05), 0, 1);
     circle.style.strokeDashoffset = L * (1 - hp);
@@ -2863,7 +2952,7 @@ function toast(msg, ms = 2000) {
       holding = false;
       done();
       btn.classList.remove('holding');
-      localStorage.setItem('snow-confirmed', 1);
+      writeState(STATE_KEYS.confirmed, '1');
       toast('CONFIRMED · 已阅');
       buzz(70);
       document.body.classList.add('shake');
@@ -2872,6 +2961,7 @@ function toast(msg, ms = 2000) {
     }
     if (hp > 0 || holding) raf = requestAnimationFrame(step);
   }
+
   btn.addEventListener('pointerdown', e => {
     if (btn.classList.contains('ok')) return;
     e.preventDefault();
@@ -2880,28 +2970,31 @@ function toast(msg, ms = 2000) {
     cancelAnimationFrame(raf);
     step();
   });
+
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev =>
     btn.addEventListener(ev, () => {
       holding = false;
       btn.classList.remove('holding');
     })
   );
+
   btn.addEventListener('contextmenu', e => e.preventDefault());
+
   reset.addEventListener('click', () => {
     btn.classList.remove('ok');
     panel.classList.remove('ok-wrap');
     hp = 0;
     circle.style.strokeDashoffset = L;
-    localStorage.removeItem('snow-confirmed');
+    removeState(STATE_KEYS.confirmed);
   });
+
   const style = document.createElement('style');
   style.textContent = `@keyframes shake{20%{transform:translate(-3px,2px)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,1px)}80%{transform:translate(2px,0)}}.shake{animation:shake .4s}`;
   document.head.appendChild(style);
 })();
 
 /* ============================================================
-   滚动锁：确认前限制滚动到“须知”区域底部（无法进入“更多”）
-   ★ 修复：从外部链接返回后自动校准边界，确保无障碍滑动
+   滚动锁：确认前限制滚动到“须知”区域底部
    ============================================================ */
 (function(){
   const noticeSection = document.getElementById('notice');
@@ -2910,10 +3003,9 @@ function toast(msg, ms = 2000) {
   if (!noticeSection || !moreSection || !holdBtn) return;
 
   function isConfirmed() {
-    return localStorage.getItem('snow-confirmed') === '1';
+    return readState(STATE_KEYS.confirmed, '0') === '1';
   }
 
-  // 计算允许的最大滚动 Y
   function getMaxScrollY() {
     const noticeRect = noticeSection.getBoundingClientRect();
     const noticeBottomDoc = noticeRect.bottom + window.scrollY;
@@ -2943,10 +3035,8 @@ function toast(msg, ms = 2000) {
     }
   }
 
-  // 初始化
   applyScrollLock();
 
-  // 监听滚动
   let ticking = false;
   window.addEventListener('scroll', () => {
     if (isConfirmed()) return;
@@ -2958,7 +3048,6 @@ function toast(msg, ms = 2000) {
     });
   }, { passive: true });
 
-  // 触摸滑动拦截
   let touchStartY = 0;
   window.addEventListener('touchstart', (e) => {
     if (isConfirmed()) return;
@@ -2977,7 +3066,6 @@ function toast(msg, ms = 2000) {
     }
   }, { passive: false });
 
-  // 确认完成后：解锁滚动
   const observer = new MutationObserver(() => {
     if (holdBtn.classList.contains('ok')) {
       unlockScroll();
@@ -2986,7 +3074,6 @@ function toast(msg, ms = 2000) {
   });
   observer.observe(holdBtn, { attributes: true, attributeFilter: ['class'] });
 
-  // 重置确认后，重新锁定滚动
   const resetBtn = document.getElementById('confirmReset');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
@@ -2996,28 +3083,17 @@ function toast(msg, ms = 2000) {
 
   if (isConfirmed()) unlockScroll();
 
-  // ★ 关键修复：页面从 bfcache 恢复或外部链接返回时，重新校准
-  window.addEventListener('pageshow', (e) => {
-    // 无论是否来自 bfcache，都重新评估锁定状态
+  function recalibrate() {
     if (isConfirmed()) {
       unlockScroll();
     } else {
       applyScrollLock();
-      // 延迟执行边界检查，确保布局已稳定
       setTimeout(enforceScrollBoundary, 100);
     }
-  });
-
-  // visibilitychange 作为补充（部分浏览器 bfcache 不触发 pageshow）
+  }
+  window.addEventListener('pageshow', recalibrate);
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      if (isConfirmed()) {
-        unlockScroll();
-      } else {
-        applyScrollLock();
-        setTimeout(enforceScrollBoundary, 100);
-      }
-    }
+    if (document.visibilityState === 'visible') recalibrate();
   });
 })();
 
@@ -3028,11 +3104,20 @@ function toast(msg, ms = 2000) {
   const cards = $$('.more-card');
   if (!cards.length) return;
 
+  const savedMore = parseInt(readState(STATE_KEYS.more, '-1'), 10);
+  if (!isNaN(savedMore) && savedMore >= 0) {
+    cards.forEach((c, i) => {
+      c.dataset.open = (i === savedMore) ? 'true' : 'false';
+    });
+  }
+
   cards.forEach(card => {
     const head = card.querySelector('.more-head');
     if (!head) return;
+    if (card.classList.contains('jump-card')) return;
 
     head.addEventListener('click', () => {
+      const index = parseInt(card.dataset.moreIndex, 10);
       const isOpen = card.dataset.open === 'true';
 
       cards.forEach(c => {
@@ -3040,14 +3125,13 @@ function toast(msg, ms = 2000) {
       });
 
       card.dataset.open = isOpen ? 'false' : 'true';
+      writeState(STATE_KEYS.more, isOpen ? -1 : index);
       buzz(8);
     });
   });
 
   $$('.more-link').forEach(a => {
-    a.addEventListener('click', () => {
-      buzz(12);
-    });
+    a.addEventListener('click', () => buzz(12));
   });
 })();
 
